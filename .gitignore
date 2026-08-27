@@ -1,0 +1,30 @@
+# Smart Warehouse CRM & Prediction Platform
+# ==========================================
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+.env
+
+# ML artifacts (binaries gitignored; metrics.json is tracked)
+backend/ml/artifacts/*.joblib
+backend/ml/artifacts/*.pkl
+
+# Node
+node_modules/
+dist/
+.parcel-cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor & Local Agent Config
+.vscode/
+.idea/
+*.swp
+.agents/
+Deployment.bat

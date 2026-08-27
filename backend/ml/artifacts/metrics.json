@@ -1,0 +1,135 @@
+{
+  "classifier": {
+    "accuracy": 0.9959,
+    "macro_f1": 0.9917,
+    "smote_applied": false,
+    "class_metrics": {
+      "Critical": {
+        "precision": 0.9888,
+        "recall": 0.9853,
+        "f1": 0.9871
+      },
+      "Fire Risk - Critical": {
+        "precision": 0.9919,
+        "recall": 0.9685,
+        "f1": 0.9801
+      },
+      "High Temp": {
+        "precision": 0.9833,
+        "recall": 0.9993,
+        "f1": 0.9912
+      },
+      "Motion Detected": {
+        "precision": 0.9962,
+        "recall": 0.9974,
+        "f1": 0.9968
+      },
+      "Rack Full": {
+        "precision": 1.0,
+        "recall": 0.995,
+        "f1": 0.9975
+      },
+      "Safe": {
+        "precision": 0.9997,
+        "recall": 0.9954,
+        "f1": 0.9976
+      }
+    },
+    "confusion_matrix": [
+      [
+        1411,
+        0,
+        0,
+        21,
+        0,
+        0
+      ],
+      [
+        1,
+        123,
+        0,
+        0,
+        0,
+        3
+      ],
+      [
+        0,
+        1,
+        6820,
+        0,
+        0,
+        4
+      ],
+      [
+        15,
+        0,
+        0,
+        5827,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        2,
+        1,
+        597,
+        0
+      ],
+      [
+        0,
+        0,
+        114,
+        0,
+        0,
+        24764
+      ]
+    ],
+    "classes": [
+      "Critical",
+      "Fire Risk - Critical",
+      "High Temp",
+      "Motion Detected",
+      "Rack Full",
+      "Safe"
+    ],
+    "features": [
+      "Distance_cm",
+      "Temperature_C",
+      "Humidity_%",
+      "Smoke_ppm",
+      "Motion",
+      "Number_of_Sacks",
+      "Zone_Capacity_Sacks",
+      "Occupancy_Pct",
+      "Month"
+    ],
+    "feature_importances": [
+      0.221,
+      0.1784,
+      0.0016,
+      0.1479,
+      0.4469,
+      0.0004,
+      0.0007,
+      0.0007,
+      0.0024
+    ]
+  },
+  "forecaster": {
+    "mae": 0.1425,
+    "r2": 0.9999,
+    "forecaster_sample_size": 30,
+    "forecaster_note": "Indicative \u2014 20 warehouse-year aggregates. Small sample size limits statistical confidence.",
+    "features": [
+      "Previous_Year_Avg_Fill_Pct",
+      "Previous_Year_Days_RackFull"
+    ],
+    "coefficients": [
+      1.0157,
+      0.0108
+    ],
+    "intercept": -0.6463
+  },
+  "last_trained": "2026-08-27T18:29:32.647174"
+}
