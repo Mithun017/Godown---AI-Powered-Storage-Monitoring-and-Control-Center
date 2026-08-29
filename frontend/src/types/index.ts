@@ -70,6 +70,12 @@ export interface PredictStatusResponse {
   status: string;
   confidence: number;
   top_features: FeatureImportance[];
+  class_probabilities?: Record<string, number>;
+  engineered_features?: {
+    Thermal_Moisture_Index: number;
+    Combustion_Risk_Score: number;
+    Capacity_Pressure_Index: number;
+  };
 }
 
 export interface PredictYearlyResponse {

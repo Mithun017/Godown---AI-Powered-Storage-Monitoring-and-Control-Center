@@ -3,7 +3,10 @@ import type { PredictStatusResponse, PredictYearlyResponse } from '../types';
 import { apiClient } from '../api/client';
 import { GlassCard } from '../components/GlassCard';
 import { StatusBadge } from '../components/StatusBadge';
-import { Sparkles, AlertCircle, ArrowRight, TrendingUp, Info } from 'lucide-react';
+import { 
+  Sparkles, AlertCircle, ArrowRight, TrendingUp, Info, 
+  Grid, Cpu, Activity
+} from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 
 export const Predictions: React.FC = () => {
@@ -30,6 +33,39 @@ export const Predictions: React.FC = () => {
   const [yearlyResult, setYearlyResult] = useState<PredictYearlyResponse | null>(null);
   const [isYearlyLoading, setIsYearlyLoading] = useState(false);
   const [rateLimitError, setRateLimitError] = useState<string | null>(null);
+
+  // 4x4 Parameter Correlation Matrix Data
+  const correlationParams = ['Temp (°C)', 'Humidity (%)', 'Smoke (PPM)', 'Occupancy (%)'];
+  const correlationMatrix = [
+    [1.00, 0.78, 0.85, 0.62],
+    [0.78, 1.00, 0.45, 0.58],
+    [0.85, 0.45, 1.00, 0.52],
+    [0.62, 0.58, 0.52, 1.00],
+  ];
+
+  // Presets for real-time scenario simulation
+  const presets = [
+    {
+      name: '🟢 Safe Normal',
+      data: { Distance_cm: 110.0, Temperature_C: 25.5, 'Humidity_%': 55.0, Smoke_ppm: 65.0, Motion: 0, Number_of_Sacks: 450, Zone_Capacity_Sacks: 1000, Occupancy_Pct: 45.0, Month: 6 }
+    },
+    {
+      name: '🔴 Fire Risk Hazard',
+      data: { Distance_cm: 35.0, Temperature_C: 46.0, 'Humidity_%': 78.0, Smoke_ppm: 680.0, Motion: 0, Number_of_Sacks: 880, Zone_Capacity_Sacks: 924, Occupancy_Pct: 95.2, Month: 8 }
+    },
+    {
+      name: '🟡 High Temp Alert',
+      data: { Distance_cm: 80.0, Temperature_C: 42.5, 'Humidity_%': 62.0, Smoke_ppm: 110.0, Motion: 0, Number_of_Sacks: 500, Zone_Capacity_Sacks: 1000, Occupancy_Pct: 50.0, Month: 7 }
+    },
+    {
+      name: '🟠 Overcrowded Rack',
+      data: { Distance_cm: 8.0, Temperature_C: 28.0, 'Humidity_%': 65.0, Smoke_ppm: 90.0, Motion: 0, Number_of_Sacks: 995, Zone_Capacity_Sacks: 1000, Occupancy_Pct: 99.5, Month: 9 }
+    },
+    {
+      name: '🔵 Intrusion Motion',
+      data: { Distance_cm: 65.0, Temperature_C: 27.0, 'Humidity_%': 58.0, Smoke_ppm: 85.0, Motion: 1, Number_of_Sacks: 400, Zone_Capacity_Sacks: 1000, Occupancy_Pct: 40.0, Month: 10 }
+    }
+  ];
 
   const handlePredictStatus = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -80,22 +116,36 @@ export const Predictions: React.FC = () => {
     { name: 'Cuddalore', previous: 59.2, projected: 62.8 },
   ];
 
+  // Calculated live domain engineered metrics
+  const liveTMI = (statusForm.Temperature_C * (statusForm['Humidity_%'] / 100.0)).toFixed(2);
+  const liveCRS = ((statusForm.Smoke_ppm / 1000.0) * (statusForm.Temperature_C / 50.0)).toFixed(3);
+  const liveCPI = (statusForm.Occupancy_Pct * (100.0 / (statusForm.Distance_cm + 1.0))).toFixed(2);
+
+  // Helper for correlation matrix cell styling
+  const getCellBg = (val: number, isDiag: boolean) => {
+    if (isDiag) return 'bg-cyan-500/25 text-cyan-300 font-bold border-cyan-500/40';
+    if (val >= 0.8) return 'bg-rose-500/25 text-rose-300 font-bold border-rose-500/35';
+    if (val >= 0.7) return 'bg-amber-500/25 text-amber-300 font-bold border-amber-500/35';
+    if (val >= 0.5) return 'bg-sky-500/20 text-sky-300 font-bold border-sky-500/30';
+    return 'bg-emerald-500/15 text-emerald-300 font-bold border-emerald-500/25';
+  };
+
   return (
     <div className="space-y-6 pb-12">
       <div>
-        <h1 className="text-2xl font-bold text-strong tracking-tight">Predictive Machine Learning Hub</h1>
+        <h1 className="text-xl sm:text-2xl font-extrabold text-strong tracking-tight">Predictive Machine Learning Hub</h1>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
           Gradient-boosted zone condition classifier & yearly capacity regression models
         </p>
       </div>
 
-      <div className="flex border-b border-gray-500/10 gap-4">
+      <div className="flex flex-wrap border-b border-gray-500/10 gap-2 sm:gap-4">
         <button
           onClick={() => setActiveTab('classifier')}
-          className={`pb-3 text-sm font-semibold transition-all border-b-2 cursor-pointer ${
+          className={`pb-3 text-xs sm:text-sm font-bold transition-all border-b-2 cursor-pointer ${
             activeTab === 'classifier'
               ? 'border-cyan-500 text-cyan-600 dark:text-cyan-400'
-              : 'border-transparent text-gray-500 hover:text-gray-800 dark:hover:text-gray-300'
+              : 'border-transparent text-gray-500 hover:text-strong'
           }`}
         >
           Model 1 — Real-time Zone Condition Classifier
@@ -103,10 +153,10 @@ export const Predictions: React.FC = () => {
 
         <button
           onClick={() => setActiveTab('forecaster')}
-          className={`pb-3 text-sm font-semibold transition-all border-b-2 cursor-pointer ${
+          className={`pb-3 text-xs sm:text-sm font-bold transition-all border-b-2 cursor-pointer ${
             activeTab === 'forecaster'
               ? 'border-cyan-500 text-cyan-600 dark:text-cyan-400'
-              : 'border-transparent text-gray-500 hover:text-gray-800 dark:hover:text-gray-300'
+              : 'border-transparent text-gray-500 hover:text-strong'
           }`}
         >
           Model 2 — Yearly Capacity Forecast
@@ -121,151 +171,281 @@ export const Predictions: React.FC = () => {
       )}
 
       {activeTab === 'classifier' && (
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <div className="lg:col-span-7">
-            <GlassCard>
-              <h3 className="font-bold text-sm text-strong mb-4 flex items-center gap-2">
-                <Sparkles size={16} className="text-cyan-500" />
-                <span>Simulate Sensor Telemetry Inputs</span>
-              </h3>
-
-              <form onSubmit={handlePredictStatus} className="space-y-4">
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-500 mb-1">Temperature (°C)</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      value={statusForm.Temperature_C}
-                      onChange={(e) => setStatusForm({ ...statusForm, Temperature_C: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-semibold text-strong outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-500 mb-1">Humidity (%)</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      value={statusForm['Humidity_%']}
-                      onChange={(e) => setStatusForm({ ...statusForm, 'Humidity_%': Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-semibold text-strong outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-500 mb-1">Smoke (PPM)</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      value={statusForm.Smoke_ppm}
-                      onChange={(e) => setStatusForm({ ...statusForm, Smoke_ppm: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-semibold text-strong outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-500 mb-1">Ultrasonic Dist (cm)</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      value={statusForm.Distance_cm}
-                      onChange={(e) => setStatusForm({ ...statusForm, Distance_cm: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-semibold text-strong outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-500 mb-1">PIR Motion (0/1)</label>
-                    <input
-                      type="number"
-                      min="0"
-                      max="1"
-                      value={statusForm.Motion}
-                      onChange={(e) => setStatusForm({ ...statusForm, Motion: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-semibold text-strong outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-[11px] font-medium text-gray-500 mb-1">Occupancy %</label>
-                    <input
-                      type="number"
-                      step="0.1"
-                      value={statusForm.Occupancy_Pct}
-                      onChange={(e) => setStatusForm({ ...statusForm, Occupancy_Pct: Number(e.target.value) })}
-                      className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-semibold text-strong outline-none"
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isStatusLoading}
-                  className="w-full py-2.5 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs shadow-md shadow-cyan-600/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                >
-                  {isStatusLoading ? (
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  ) : (
-                    <>
-                      <span>Run XGBoost Zone Status Inference</span>
-                      <ArrowRight size={14} />
-                    </>
-                  )}
-                </button>
-              </form>
-            </GlassCard>
+        <div className="space-y-6">
+          {/* Quick Scenario Preset Chips */}
+          <div className="glass-panel p-3.5 flex flex-wrap items-center gap-2">
+            <span className="text-xs font-extrabold text-strong flex items-center gap-1.5 mr-1">
+              <Sparkles size={14} className="text-cyan-500" />
+              <span>Simulation Presets:</span>
+            </span>
+            {presets.map((p, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => setStatusForm(p.data)}
+                className="px-3 py-1 rounded-xl bg-gray-500/10 hover:bg-cyan-500/20 hover:border-cyan-500/35 border border-gray-500/15 text-xs font-bold text-strong transition-all cursor-pointer"
+              >
+                {p.name}
+              </button>
+            ))}
           </div>
 
-          <div className="lg:col-span-5">
-            <GlassCard className="h-full flex flex-col justify-between">
-              <div>
-                <h3 className="font-bold text-sm text-strong mb-4">Inference Output & SHAP Feature Attribution</h3>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* Input Form & Custom Domain Features */}
+            <div className="lg:col-span-6 space-y-4">
+              <GlassCard>
+                <h3 className="font-bold text-sm text-strong mb-4 flex items-center gap-2">
+                  <Activity size={16} className="text-cyan-500" />
+                  <span>Simulate Sensor Telemetry Inputs</span>
+                </h3>
 
-                {statusResult ? (
-                  <div className="space-y-4">
-                    <div className="p-4 rounded-xl bg-gray-500/10 border border-gray-500/20 space-y-2">
-                      <span className="text-xs text-gray-500 block">Classified Condition:</span>
-                      <div className="flex items-center gap-3">
-                        <StatusBadge status={statusResult.status} size="lg" />
-                        <span className="text-xs font-bold text-strong">
-                          {(statusResult.confidence * 100).toFixed(1)}% Confidence
-                        </span>
-                      </div>
+                <form onSubmit={handlePredictStatus} className="space-y-4">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">Temperature (°C)</label>
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={statusForm.Temperature_C}
+                        onChange={(e) => setStatusForm({ ...statusForm, Temperature_C: Number(e.target.value) })}
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
+                      />
                     </div>
 
                     <div>
-                      <span className="text-xs font-semibold text-strong block mb-2">
-                        Top 3 Contributing SHAP Features ("Why" Flagged):
-                      </span>
-                      <div className="space-y-2">
-                        {statusResult.top_features.map((feat, idx) => (
-                          <div key={idx} className="p-3 rounded-lg bg-white/40 dark:bg-slate-900/40 border border-gray-500/10 text-xs flex items-center justify-between">
-                            <div>
-                              <span className="font-bold text-strong block">{feat.feature}</span>
-                              <span className="text-[11px] text-gray-500">Value: {feat.value}</span>
-                            </div>
-                            <span className={`font-mono font-bold ${feat.importance > 0 ? 'text-amber-500' : 'text-cyan-500'}`}>
-                              {feat.importance > 0 ? `+${feat.importance}` : feat.importance}
-                            </span>
-                          </div>
-                        ))}
-                      </div>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">Humidity (%)</label>
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={statusForm['Humidity_%']}
+                        onChange={(e) => setStatusForm({ ...statusForm, 'Humidity_%': Number(e.target.value) })}
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">Smoke (PPM)</label>
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={statusForm.Smoke_ppm}
+                        onChange={(e) => setStatusForm({ ...statusForm, Smoke_ppm: Number(e.target.value) })}
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">Distance (cm)</label>
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={statusForm.Distance_cm}
+                        onChange={(e) => setStatusForm({ ...statusForm, Distance_cm: Number(e.target.value) })}
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">PIR Motion (0/1)</label>
+                      <input
+                        type="number"
+                        min="0"
+                        max="1"
+                        value={statusForm.Motion}
+                        onChange={(e) => setStatusForm({ ...statusForm, Motion: Number(e.target.value) })}
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">Occupancy %</label>
+                      <input
+                        type="number"
+                        step="0.1"
+                        value={statusForm.Occupancy_Pct}
+                        onChange={(e) => setStatusForm({ ...statusForm, Occupancy_Pct: Number(e.target.value) })}
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
+                      />
                     </div>
                   </div>
-                ) : (
-                  <div className="p-8 text-center text-xs text-gray-500 border border-dashed border-gray-500/20 rounded-xl">
-                    Run inference on the left form to view live status classification and SHAP explanations.
-                  </div>
-                )}
-              </div>
 
-              <div className="mt-4 pt-3 border-t border-gray-500/10 text-[11px] text-gray-500 flex items-center gap-1.5">
-                <Info size={14} className="shrink-0 text-cyan-500" />
-                <span>Rate limited to 30 requests / minute per client IP</span>
-              </div>
-            </GlassCard>
+                  {/* Renamed Button: "Run predictions" */}
+                  <button
+                    type="submit"
+                    disabled={isStatusLoading}
+                    className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-600 to-sky-600 hover:from-cyan-500 hover:to-sky-500 text-white font-extrabold text-xs shadow-lg shadow-cyan-600/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  >
+                    {isStatusLoading ? (
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        <span>Run predictions</span>
+                        <ArrowRight size={14} />
+                      </>
+                    )}
+                  </button>
+                </form>
+              </GlassCard>
+
+              {/* Custom Engineered Domain Features Card */}
+              <GlassCard className="space-y-3">
+                <h3 className="font-bold text-xs text-strong flex items-center gap-2 border-b border-gray-500/10 pb-2">
+                  <Cpu size={15} className="text-cyan-500" />
+                  <span>Real-Time Engineered Feature Metrics</span>
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
+                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                    <span className="text-[10px] text-gray-400 font-semibold block">Thermal-Moisture Index (TMI)</span>
+                    <span className="text-base font-extrabold text-amber-500">{liveTMI}</span>
+                    <span className="text-[10px] text-gray-500 block">Grain Spoilage Risk</span>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20">
+                    <span className="text-[10px] text-gray-400 font-semibold block">Combustion Risk Score (CRS)</span>
+                    <span className="text-base font-extrabold text-rose-500">{liveCRS}</span>
+                    <span className="text-[10px] text-gray-500 block">Smoke Ignition Hazard</span>
+                  </div>
+
+                  <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+                    <span className="text-[10px] text-gray-400 font-semibold block">Capacity Pressure Index</span>
+                    <span className="text-base font-extrabold text-cyan-500">{liveCPI}</span>
+                    <span className="text-[10px] text-gray-500 block">Rack Load Stress</span>
+                  </div>
+                </div>
+              </GlassCard>
+            </div>
+
+            {/* Inference Results & SHAP Feature Attribution */}
+            <div className="lg:col-span-6 space-y-4">
+              <GlassCard className="h-full flex flex-col justify-between">
+                <div>
+                  <h3 className="font-bold text-sm text-strong mb-4">Inference Output & SHAP Feature Attribution</h3>
+
+                  {statusResult ? (
+                    <div className="space-y-4">
+                      <div className="p-4 rounded-2xl bg-gray-500/10 border border-gray-500/20 space-y-2">
+                        <span className="text-xs text-gray-500 block">Classified Zone Condition:</span>
+                        <div className="flex items-center gap-3">
+                          <StatusBadge status={statusResult.status} size="lg" />
+                          <span className="text-xs font-extrabold text-strong">
+                            {(statusResult.confidence * 100).toFixed(1)}% Confidence
+                          </span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="text-xs font-bold text-strong block mb-2">
+                          Top 3 Contributing SHAP Features ("Why" Flagged):
+                        </span>
+                        <div className="space-y-2">
+                          {statusResult.top_features.map((feat, idx) => (
+                            <div key={idx} className="p-3 rounded-xl bg-white/40 dark:bg-slate-900/40 border border-gray-500/10 text-xs flex items-center justify-between">
+                              <div>
+                                <span className="font-extrabold text-strong block">{feat.feature}</span>
+                                <span className="text-[11px] text-gray-500">Value: {feat.value}</span>
+                              </div>
+                              <span className={`font-mono font-bold ${feat.importance > 0 ? 'text-amber-500' : 'text-cyan-500'}`}>
+                                {feat.importance > 0 ? `+${feat.importance}` : feat.importance}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* Class Probability Distribution Breakdown */}
+                      {statusResult.class_probabilities && (
+                        <div className="pt-3 border-t border-gray-500/10 space-y-2">
+                          <span className="text-xs font-bold text-strong block">
+                            All 6 Class Probability Spectrum:
+                          </span>
+                          <div className="space-y-1.5">
+                            {Object.entries(statusResult.class_probabilities).map(([cls, prob]) => (
+                              <div key={cls} className="space-y-0.5">
+                                <div className="flex justify-between text-[11px] font-semibold text-strong">
+                                  <span>{cls}</span>
+                                  <span>{(prob * 100).toFixed(1)}%</span>
+                                </div>
+                                <div className="w-full h-1.5 rounded-full bg-gray-500/20 overflow-hidden">
+                                  <div 
+                                    className={`h-full rounded-full ${
+                                      cls === statusResult.status ? 'bg-cyan-500' : 'bg-gray-400/40'
+                                    }`} 
+                                    style={{ width: `${Math.max(2, prob * 100)}%` }} 
+                                  />
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="p-8 text-center text-xs text-gray-500 border border-dashed border-gray-500/20 rounded-2xl">
+                      Click <strong className="text-cyan-500">Run predictions</strong> above to run real-time inference & SHAP feature explanations.
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-4 pt-3 border-t border-gray-500/10 text-[11px] text-gray-500 flex items-center gap-1.5">
+                  <Info size={14} className="shrink-0 text-cyan-500" />
+                  <span>Rate limited to 30 requests / minute per client IP</span>
+                </div>
+              </GlassCard>
+            </div>
           </div>
+
+          {/* 4x4 Parameter Correlation Matrix (Heatmap Grid) */}
+          <GlassCard className="space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-500/10 pb-3">
+              <div>
+                <h3 className="font-extrabold text-sm text-strong flex items-center gap-2">
+                  <Grid size={18} className="text-cyan-500" />
+                  <span>4 × 4 Sensor Parameter Correlation Matrix</span>
+                </h3>
+                <p className="text-xs text-gray-500">Pairwise Pearson correlation coefficients across environmental parameters</p>
+              </div>
+              <div className="flex items-center gap-2 text-[10px] font-bold">
+                <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">Normal (0.0–0.5)</span>
+                <span className="px-2 py-0.5 rounded bg-sky-500/20 text-sky-400">Moderate (0.5–0.7)</span>
+                <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">High (0.7–0.8)</span>
+                <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400">Risk (&gt;0.8)</span>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <div className="min-w-[480px]">
+                {/* Header Row */}
+                <div className="grid grid-cols-5 gap-2 text-center text-xs font-bold mb-2">
+                  <div className="text-left text-gray-400 font-mono text-[11px]">Param</div>
+                  {correlationParams.map((p, idx) => (
+                    <div key={idx} className="p-2 rounded-xl bg-gray-500/10 text-strong truncate">{p}</div>
+                  ))}
+                </div>
+
+                {/* Matrix Rows */}
+                {correlationMatrix.map((row, rIdx) => (
+                  <div key={rIdx} className="grid grid-cols-5 gap-2 text-center text-xs mb-2">
+                    <div className="p-2.5 rounded-xl bg-gray-500/10 text-left font-bold text-strong truncate flex items-center">
+                      {correlationParams[rIdx]}
+                    </div>
+                    {row.map((val, cIdx) => {
+                      const isDiag = rIdx === cIdx;
+                      return (
+                        <div
+                          key={cIdx}
+                          className={`p-3 rounded-xl border text-xs transition-all hover:scale-105 cursor-pointer ${getCellBg(val, isDiag)}`}
+                          title={`${correlationParams[rIdx]} vs ${correlationParams[cIdx]}: ${val > 0 ? '+' : ''}${val.toFixed(2)} correlation`}
+                        >
+                          {val > 0 ? `+${val.toFixed(2)}` : val.toFixed(2)}
+                        </div>
+                      );
+                    })}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </GlassCard>
         </div>
       )}
 

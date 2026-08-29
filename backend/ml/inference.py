@@ -38,11 +38,33 @@ def predict_zone_status(input_data: dict) -> dict:
     encoder = classifier_data["encoder"]
     features = classifier_data["features"]
 
-    df = pd.DataFrame([input_data])[features]
+    input_dict = dict(input_data)
+    # Automatically compute engineered custom features if missing from payload
+    if "Thermal_Moisture_Index" not in input_dict or input_dict["Thermal_Moisture_Index"] is None:
+        temp = float(input_dict.get("Temperature_C", 25.0))
+        hum = float(input_dict.get("Humidity_%", 50.0))
+        input_dict["Thermal_Moisture_Index"] = round(temp * (hum / 100.0), 2)
+
+    if "Combustion_Risk_Score" not in input_dict or input_dict["Combustion_Risk_Score"] is None:
+        smoke = float(input_dict.get("Smoke_ppm", 100.0))
+        temp = float(input_dict.get("Temperature_C", 25.0))
+        input_dict["Combustion_Risk_Score"] = round((smoke / 1000.0) * (temp / 50.0), 3)
+
+    if "Capacity_Pressure_Index" not in input_dict or input_dict["Capacity_Pressure_Index"] is None:
+        occ = float(input_dict.get("Occupancy_Pct", 50.0))
+        dist = float(input_dict.get("Distance_cm", 50.0))
+        input_dict["Capacity_Pressure_Index"] = round(occ * (100.0 / (dist + 1.0)), 2)
+
+    df = pd.DataFrame([input_dict])[features]
     probs = model.predict_proba(df)[0]
     pred_idx = np.argmax(probs)
     predicted_status = encoder.inverse_transform([pred_idx])[0]
     confidence = round(float(probs[pred_idx]), 4)
+
+    # Class probability breakdown across all classes
+    class_probs = {}
+    for idx, class_name in enumerate(encoder.classes_):
+        class_probs[class_name] = round(float(probs[idx]), 4)
 
     top_features = []
     if tree_explainer is not None:
@@ -86,7 +108,13 @@ def predict_zone_status(input_data: dict) -> dict:
     return {
         "status": predicted_status,
         "confidence": confidence,
-        "top_features": top_features
+        "top_features": top_features,
+        "class_probabilities": class_probs,
+        "engineered_features": {
+            "Thermal_Moisture_Index": input_dict["Thermal_Moisture_Index"],
+            "Combustion_Risk_Score": input_dict["Combustion_Risk_Score"],
+            "Capacity_Pressure_Index": input_dict["Capacity_Pressure_Index"]
+        }
     }
 
 def predict_yearly_capacity(input_data: dict) -> dict:
@@ -100,7 +128,6 @@ def predict_yearly_capacity(input_data: dict) -> dict:
     pred_val = float(model.predict(df)[0])
     projected = round(max(0.0, min(100.0, pred_val)), 2)
 
-    # Calculate 95% confidence interval bounds (+/- 3.0 percentage points)
     ci_lower = round(max(0.0, projected - 3.0), 2)
     ci_upper = round(min(100.0, projected + 3.0), 2)
 

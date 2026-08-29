@@ -11,6 +11,9 @@ class PredictStatusRequest(BaseModel):
     Zone_Capacity_Sacks: int
     Occupancy_Pct: float
     Month: int
+    Thermal_Moisture_Index: Optional[float] = None
+    Combustion_Risk_Score: Optional[float] = None
+    Capacity_Pressure_Index: Optional[float] = None
 
     class Config:
         populate_by_name = True
@@ -24,6 +27,8 @@ class PredictStatusResponse(BaseModel):
     status: str
     confidence: float
     top_features: List[FeatureImportance]
+    class_probabilities: Optional[Dict[str, float]] = None
+    engineered_features: Optional[Dict[str, float]] = None
 
 class PredictYearlyRequest(BaseModel):
     Previous_Year_Avg_Fill_Pct: float

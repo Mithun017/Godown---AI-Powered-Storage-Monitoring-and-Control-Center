@@ -20,14 +20,29 @@ os.makedirs(ARTIFACTS_DIR, exist_ok=True)
 
 FEATURES = [
     "Distance_cm", "Temperature_C", "Humidity_%", "Smoke_ppm", "Motion",
-    "Number_of_Sacks", "Zone_Capacity_Sacks", "Occupancy_Pct", "Month"
+    "Number_of_Sacks", "Zone_Capacity_Sacks", "Occupancy_Pct", "Month",
+    "Thermal_Moisture_Index", "Combustion_Risk_Score", "Capacity_Pressure_Index"
 ]
 TARGET = "Warehouse_Status"
 
+def add_custom_features(df: pd.DataFrame) -> pd.DataFrame:
+    """Engineers domain-specific custom features for warehouse environmental risk & capacity pressure."""
+    df = df.copy()
+    # 1. Thermal-Moisture Index (Grain mold & spoilage risk factor)
+    df["Thermal_Moisture_Index"] = df["Temperature_C"] * (df["Humidity_%"] / 100.0)
+    # 2. Combustion Risk Score (Ignition & smoke concentration hazard factor)
+    df["Combustion_Risk_Score"] = (df["Smoke_ppm"] / 1000.0) * (df["Temperature_C"] / 50.0)
+    # 3. Capacity Pressure Index (Structural rack crowding vs proximity sensor reading)
+    df["Capacity_Pressure_Index"] = df["Occupancy_Pct"] * (100.0 / (df["Distance_cm"] + 1.0))
+    return df
+
 def train_classifier():
     print(f"Loading data for Model 1 from {CSV_PATH}...")
-    df = pd.read_csv(CSV_PATH)
+    raw_df = pd.read_csv(CSV_PATH)
     
+    # Feature Engineering
+    df = add_custom_features(raw_df)
+
     # Label encode target
     le = LabelEncoder()
     df["target"] = le.fit_transform(df[TARGET])
@@ -48,7 +63,7 @@ def train_classifier():
 
     # Step 1: Initial XGBoost with sample weights
     clf = XGBClassifier(
-        n_estimators=100,
+        n_estimators=150,
         max_depth=6,
         learning_rate=0.1,
         random_state=42,
@@ -70,7 +85,6 @@ def train_classifier():
         }
 
     smote_applied = False
-    # Amendment #10: Check if critical class recall is below 0.70
     critical_indices = [i for i, name in enumerate(target_names) if name in ["Rack Full", "Fire Risk - Critical"]]
     low_recall = any(recall[idx] < 0.70 for idx in critical_indices if idx < len(recall))
 
@@ -82,7 +96,7 @@ def train_classifier():
         smote_applied = True
         
         clf = XGBClassifier(
-            n_estimators=100,
+            n_estimators=150,
             max_depth=6,
             learning_rate=0.1,
             random_state=42,
@@ -124,5 +138,20 @@ def train_classifier():
 
 if __name__ == "__main__":
     metrics = train_classifier()
-    print("Classifier Training Summary:")
-    print(json.dumps(metrics, indent=2))
+    
+    # Update metrics.json file preserving forecaster metrics
+    metrics_path = os.path.join(ARTIFACTS_DIR, "metrics.json")
+    existing_data = {}
+    if os.path.exists(metrics_path):
+        try:
+            with open(metrics_path, "r") as f:
+                existing_data = json.load(f)
+        except Exception:
+            pass
+            
+    existing_data["classifier"] = metrics
+    existing_data["last_trained"] = pd.Timestamp.now().isoformat()
+    
+    with open(metrics_path, "w") as f:
+        json.dump(existing_data, f, indent=2)
+    print("Updated metrics.json successfully!")
