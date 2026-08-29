@@ -6,8 +6,8 @@ import {
   Activity, Thermometer, Droplets, Flame, Package, Move 
 } from 'lucide-react';
 import { 
-  ResponsiveContainer, AreaChart, Area, LineChart, Line, XAxis, YAxis, 
-  Tooltip, CartesianGrid, BarChart, Bar, Legend, ReferenceLine 
+  ResponsiveContainer, LineChart, Line, XAxis, YAxis, 
+  Tooltip, CartesianGrid, Legend, ReferenceLine 
 } from 'recharts';
 
 export const Monitoring: React.FC = () => {
@@ -28,12 +28,11 @@ export const Monitoring: React.FC = () => {
 
   useEffect(() => {
     if (selectedWarehouseId && selectedZoneId) {
-      // Initialize dynamic organic telemetry data stream for selected warehouse & zone
       initOrganicTelemetryStream(selectedWarehouseId, selectedZoneId);
     }
   }, [selectedWarehouseId, selectedZoneId]);
 
-  // 5-Second Live Telemetry Ping Heartbeat
+  // 5-Second Live Telemetry Ping Heartbeat (Always Running)
   useEffect(() => {
     if (selectedWarehouseId && selectedZoneId) {
       liveIntervalRef.current = setInterval(() => {
@@ -62,27 +61,16 @@ export const Monitoring: React.FC = () => {
     }
   };
 
-  // Helper to generate 30 smooth, organic, distinct historical sensor readings
   const generateOrganicPoint = (step: number, baseTimestamp: Date, wId: number, zId: number): SensorReading => {
     const selectedWh = warehouses.find(w => w.warehouse_id === wId);
     const whName = selectedWh ? selectedWh.name : `Warehouse #${wId}`;
     const district = selectedWh ? selectedWh.district : 'Coimbatore';
     const capacitySacks = 1000;
 
-    // Independent organic wave physics for each distinct sensor parameter:
-    // 1. Temp (°C): Smooth thermal cycle between 26.5°C and 34.0°C
     const temp = Number((29.5 + 3.2 * Math.sin(step / 3.5) + (Math.random() * 0.4 - 0.2)).toFixed(1));
-    
-    // 2. Humidity (%): Inverse relationship to temp, varying between 52% and 78%
     const hum = Math.min(100, Math.max(30, Number((66.0 - 7.5 * Math.sin(step / 3.5) + (Math.random() * 0.8 - 0.4)).toFixed(1))));
-    
-    // 3. Smoke (PPM): Independent gas concentration wave varying between 90 PPM and 280 PPM
     const smoke = Math.max(20, Math.round(160 + 75 * Math.cos(step / 2.8) + (Math.random() * 10 - 5)));
-    
-    // 4. Distance (cm): Ultrasonic proximity distance wave varying between 35cm and 105cm
     const dist = Number(Math.max(10, (68.0 + 32.0 * Math.sin(step / 2.2 + 1.5) + (Math.random() * 1.5 - 0.75))).toFixed(1));
-    
-    // 5. Occupancy (%): Dynamic rack capacity utilization between 48% and 86%
     const occ = Number((65.0 + 18.0 * Math.sin(step / 4.2 + 2.5) + (Math.random() * 0.6 - 0.3)).toFixed(1));
     const vacant = Number((100 - occ).toFixed(1));
     const sacks = Math.round((capacitySacks * occ) / 100);
@@ -137,9 +125,8 @@ export const Monitoring: React.FC = () => {
     const now = new Date();
     const initialList: SensorReading[] = [];
 
-    // Build 30 smooth, organic, distinct historical data points
     for (let i = 29; i >= 0; i--) {
-      const pointTime = new Date(now.getTime() - i * 15000); // 15s intervals in history
+      const pointTime = new Date(now.getTime() - i * 15000);
       const stepIndex = 30 - i;
       initialList.push(generateOrganicPoint(stepIndex, pointTime, wId, zId));
     }
@@ -149,13 +136,12 @@ export const Monitoring: React.FC = () => {
       total: 30,
       page: 1,
       limit: 30,
-      readings: initialList.reverse(), // Most recent first for table/KPIs
+      readings: initialList.reverse(),
     });
     setLastPingTime(now.toLocaleTimeString());
     setTimeout(() => setIsPinging(false), 600);
   };
 
-  // Pings next organic telemetry point every 5 seconds
   const pingOrganicReadings = () => {
     setIsPinging(true);
     const now = new Date();
@@ -168,7 +154,6 @@ export const Monitoring: React.FC = () => {
       if (!prev || !prev.readings) return prev;
 
       const newReading = generateOrganicPoint(currentStep, now, selectedWarehouseId, selectedZoneId);
-      // Slide new point in, drop 31st point
       const updatedList = [newReading, ...prev.readings.slice(0, 29)];
       
       return {
@@ -322,51 +307,45 @@ export const Monitoring: React.FC = () => {
         </div>
       )}
 
-      {/* Realistic Spline & Area Telemetry Charts */}
+      {/* Telemetry Line Charts Matching User Reference Image Design */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* CHART 1: Temperature & Humidity Dual Gradient Area Stream */}
-        <GlassCard>
-          <div className="flex items-center justify-between mb-4 border-b border-gray-500/10 pb-3">
-            <div>
-              <h3 className="font-extrabold text-sm text-strong flex items-center gap-2">
-                <Thermometer size={16} className="text-amber-500" />
-                <span>Live Temperature & Humidity Area Trends</span>
-              </h3>
-              <p className="text-[11px] text-gray-500">Dual-axis spline telemetry with 40°C alarm threshold</p>
-            </div>
-            <span className="text-xs font-bold text-amber-500 bg-amber-500/10 px-2.5 py-0.5 rounded-lg border border-amber-500/20">
-              5s Dynamic Stream
-            </span>
+        {/* CHART 1: Multi-Parameter Sensor Telemetry Line Analysis (Blue, Orange, Green Lines with Linear Vertex Dots) */}
+        <GlassCard className="col-span-1 lg:col-span-2">
+          <div className="text-center mb-6 pt-2">
+            <h2 className="text-xl sm:text-2xl font-extrabold text-strong tracking-tight">
+              Warehouse Telemetry Multi-Parameter Analysis
+            </h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+              Comparative real-time multi-line analysis of Temperature, Relative Humidity, and Occupancy Rate
+            </p>
           </div>
 
-          <div className="h-64 sm:h-72 w-full">
+          <div className="h-72 sm:h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData}>
-                <defs>
-                  <linearGradient id="tempGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#F59E0B" stopOpacity={0.0} />
-                  </linearGradient>
-                  <linearGradient id="humGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#38BDF8" stopOpacity={0.4} />
-                    <stop offset="95%" stopColor="#38BDF8" stopOpacity={0.0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-                <XAxis dataKey="Timestamp" tick={{ fontSize: 9 }} tickFormatter={(ts) => ts.split(' ')[1] || ts} />
-                <YAxis yAxisId="left" tick={{ fontSize: 10 }} domain={['auto', 'auto']} />
-                <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} domain={[0, 100]} />
+              <LineChart data={chartData.slice(-12)}>
+                <CartesianGrid strokeDasharray="3 3" opacity={0.12} />
+                <XAxis 
+                  dataKey="Timestamp" 
+                  tick={{ fontSize: 10 }} 
+                  tickFormatter={(ts) => ts.split(' ')[1] || ts}
+                />
+                <YAxis 
+                  tick={{ fontSize: 10 }} 
+                  domain={['auto', 'auto']}
+                />
                 <Tooltip contentStyle={{ background: '#0F172A', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }} />
-                <Legend />
-                <ReferenceLine yAxisId="left" y={40} label={{ value: '40°C Threshold', fill: '#EF4444', fontSize: 10 }} stroke="#EF4444" strokeDasharray="3 3" />
-                <Area yAxisId="left" type="monotone" dataKey="Temperature_C" name="Temp (°C)" stroke="#F59E0B" strokeWidth={2.5} fill="url(#tempGradient)" />
-                <Area yAxisId="right" type="monotone" dataKey="Humidity_%" name="Humidity (%)" stroke="#38BDF8" strokeWidth={2.5} fill="url(#humGradient)" />
-              </AreaChart>
+                <Legend verticalAlign="bottom" align="center" iconType="rect" wrapperStyle={{ paddingTop: '15px' }} />
+                
+                {/* 3 Color Lines (Blue = Temp, Orange = Humidity, Green = Occupancy) with Linear Straight Segment Nodes */}
+                <Line type="linear" dataKey="Temperature_C" name="Temperature (°C)" stroke="#3B82F6" strokeWidth={2.2} dot={{ r: 5, fill: '#3B82F6', strokeWidth: 1 }} />
+                <Line type="linear" dataKey="Humidity_%" name="Humidity (%)" stroke="#F97316" strokeWidth={2.2} dot={{ r: 5, fill: '#F97316', strokeWidth: 1 }} />
+                <Line type="linear" dataKey="Occupancy_Pct" name="Occupancy (%)" stroke="#22C55E" strokeWidth={2.2} dot={{ r: 5, fill: '#22C55E', strokeWidth: 1 }} />
+              </LineChart>
             </ResponsiveContainer>
           </div>
         </GlassCard>
 
-        {/* CHART 2: Smoke PPM & Gas Ignition Hazard Stream */}
+        {/* CHART 2: Smoke PPM Combustion Line Stream */}
         <GlassCard>
           <div className="flex items-center justify-between mb-4 border-b border-gray-500/10 pb-3">
             <div>
@@ -388,56 +367,26 @@ export const Monitoring: React.FC = () => {
                 <XAxis dataKey="Timestamp" tick={{ fontSize: 9 }} tickFormatter={(ts) => ts.split(' ')[1] || ts} />
                 <YAxis tick={{ fontSize: 10 }} domain={['auto', 'auto']} />
                 <Tooltip contentStyle={{ background: '#0F172A', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }} />
-                <Legend />
+                <Legend verticalAlign="bottom" align="center" iconType="rect" />
                 <ReferenceLine y={300} label={{ value: 'Hazard Level (300 PPM)', fill: '#F97316', fontSize: 10 }} stroke="#F97316" strokeDasharray="3 3" />
-                <Line type="monotone" dataKey="Smoke_ppm" name="Smoke PPM" stroke="#FB8500" strokeWidth={2.5} dot={{ r: 3, fill: '#FB8500' }} />
+                <Line type="linear" dataKey="Smoke_ppm" name="Smoke PPM" stroke="#F97316" strokeWidth={2.2} dot={{ r: 4.5, fill: '#F97316' }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </GlassCard>
 
-        {/* CHART 3: Occupancy % vs Vacant Capacity Dynamic Bar Graph */}
-        <GlassCard>
-          <div className="flex items-center justify-between mb-4 border-b border-gray-500/10 pb-3">
-            <div>
-              <h3 className="font-extrabold text-sm text-strong flex items-center gap-2">
-                <Package size={16} className="text-cyan-500" />
-                <span>Zone Capacity Utilization & Vacant Volume (%)</span>
-              </h3>
-              <p className="text-[11px] text-gray-500">Live sack storage volume vs empty rack capacity</p>
-            </div>
-            <span className="text-xs font-bold text-cyan-500 bg-cyan-500/10 px-2.5 py-0.5 rounded-lg border border-cyan-500/20">
-              Capacity Utilization
-            </span>
-          </div>
-
-          <div className="h-64 sm:h-72 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData.slice(-15)}>
-                <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-                <XAxis dataKey="Timestamp" tick={{ fontSize: 9 }} tickFormatter={(ts) => ts.split(' ')[1] || ts} />
-                <YAxis tick={{ fontSize: 10 }} domain={[0, 100]} />
-                <Tooltip contentStyle={{ background: '#0F172A', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }} />
-                <Legend />
-                <Bar dataKey="Occupancy_Pct" name="Occupancy %" fill="#219EBC" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="Vacant_Space_Pct" name="Vacant %" fill="#8ECAE6" radius={[4, 4, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </GlassCard>
-
-        {/* CHART 4: Proximity Distance (cm) & Motion Telemetry Stream */}
+        {/* CHART 3: Proximity Distance (cm) Line Stream */}
         <GlassCard>
           <div className="flex items-center justify-between mb-4 border-b border-gray-500/10 pb-3">
             <div>
               <h3 className="font-extrabold text-sm text-strong flex items-center gap-2">
                 <Move size={16} className="text-purple-500" />
-                <span>Ultrasonic Distance (cm) Proximity Stream</span>
+                <span>Ultrasonic Proximity Distance (cm) Analysis</span>
               </h3>
               <p className="text-[11px] text-gray-500">HC-SR04 ultrasonic distance sensor readings</p>
             </div>
             <span className="text-xs font-bold text-purple-500 bg-purple-500/10 px-2.5 py-0.5 rounded-lg border border-purple-500/20">
-              Ultrasonic Proximity
+              Proximity Telemetry
             </span>
           </div>
 
@@ -448,8 +397,8 @@ export const Monitoring: React.FC = () => {
                 <XAxis dataKey="Timestamp" tick={{ fontSize: 9 }} tickFormatter={(ts) => ts.split(' ')[1] || ts} />
                 <YAxis tick={{ fontSize: 10 }} domain={['auto', 'auto']} />
                 <Tooltip contentStyle={{ background: '#0F172A', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }} />
-                <Legend />
-                <Line type="monotone" dataKey="Distance_cm" name="Distance (cm)" stroke="#A78BFA" strokeWidth={2.5} dot={{ r: 3, fill: '#A78BFA' }} />
+                <Legend verticalAlign="bottom" align="center" iconType="rect" />
+                <Line type="linear" dataKey="Distance_cm" name="Distance (cm)" stroke="#A855F7" strokeWidth={2.2} dot={{ r: 4.5, fill: '#A855F7' }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
