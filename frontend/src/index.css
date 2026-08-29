@@ -31,14 +31,15 @@
   --accent-cyan-glow: rgba(56, 189, 248, 0.25);
 }
 
-body {
+html, body, #root {
   margin: 0;
   padding: 0;
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  background: var(--bg-gradient);
-  background-attachment: fixed;
-  color: var(--text-primary);
   min-height: 100vh;
+  background-color: var(--bg-base) !important;
+  background: var(--bg-gradient) !important;
+  background-attachment: fixed !important;
+  color: var(--text-primary);
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   transition: background 0.3s ease, color 0.3s ease;
   overflow-x: hidden;
 }
