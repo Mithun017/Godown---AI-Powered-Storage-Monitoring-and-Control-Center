@@ -2,6 +2,7 @@
 @import "tailwindcss";
 
 :root {
+  color-scheme: light;
   /* Light Theme - Clean Industrial Slate */
   --bg-gradient: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 50%, #E2E8F0 100%);
   --bg-base: #F8FAFC;
@@ -17,9 +18,10 @@
 }
 
 .dark {
+  color-scheme: dark;
   /* Dark Theme - Deep Tech Cybernetic Navy */
   --bg-gradient: radial-gradient(circle at 50% 0%, #1E293B 0%, #0F172A 60%, #0B132B 100%);
-  --bg-base: #0F172A;
+  --bg-base: #0B132B;
   --glass-bg: rgba(15, 23, 42, 0.72);
   --glass-border: rgba(255, 255, 255, 0.1);
   --glass-border-hover: rgba(56, 189, 248, 0.4);
@@ -31,13 +33,24 @@
   --accent-cyan-glow: rgba(56, 189, 248, 0.25);
 }
 
-html, body, #root {
+html {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  background-color: var(--bg-base) !important;
+  background-image: var(--bg-gradient) !important;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+body, #root {
   margin: 0;
   padding: 0;
   min-height: 100vh;
   background-color: var(--bg-base) !important;
-  background: var(--bg-gradient) !important;
-  background-attachment: fixed !important;
+  background-image: var(--bg-gradient) !important;
+  background-repeat: no-repeat;
+  background-size: cover;
   color: var(--text-primary);
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   transition: background 0.3s ease, color 0.3s ease;
