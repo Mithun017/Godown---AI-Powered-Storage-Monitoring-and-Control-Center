@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   Home, Activity, GitBranch, LayoutGrid, Bell, BarChart2, 
-  Users, Settings, Sun, Moon, ChevronRight, ChevronLeft, LogOut, Warehouse, X
+  Users, Settings, Sun, Moon, ChevronLeft, LogOut, Warehouse, X
 } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
 import { useThemeStore } from '../stores/themeStore';
@@ -44,6 +44,8 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
     onCloseMobile();
   };
 
+  const showText = isExpanded || isMobileOpen;
+
   return (
     <>
       {/* Mobile Dark Backdrop Overlay */}
@@ -67,35 +69,46 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
       >
         {/* 1. Header (Fixed Top) */}
         <div className="shrink-0 p-3 border-b border-gray-500/10 flex items-center justify-between">
-          <div className="flex items-center gap-3 overflow-hidden">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/20 shrink-0">
-              <Warehouse size={20} />
-            </div>
-            {(isExpanded || isMobileOpen) && (
-              <div className="flex flex-col min-w-0">
-                <span className="font-extrabold text-xs tracking-tight text-strong truncate">TN Warehouses</span>
-                <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-semibold truncate">Control Center</span>
+          {showText ? (
+            <>
+              <div className="flex items-center gap-3 overflow-hidden">
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/20 shrink-0">
+                  <Warehouse size={20} />
+                </div>
+                <div className="flex flex-col min-w-0">
+                  <span className="font-extrabold text-xs tracking-tight text-strong truncate">TN Warehouses</span>
+                  <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-semibold truncate">Control Center</span>
+                </div>
               </div>
-            )}
-          </div>
 
-          {/* Desktop Collapse Button */}
-          <button
-            onClick={onToggleExpand}
-            className="hidden md:flex p-1.5 rounded-xl hover:bg-gray-500/10 text-gray-500 dark:text-gray-400 transition-colors cursor-pointer"
-            title={isExpanded ? "Collapse Sidebar" : "Expand Sidebar"}
-          >
-            {isExpanded ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
-          </button>
+              {/* Desktop Collapse Chevron Button */}
+              <button
+                onClick={onToggleExpand}
+                className="hidden md:flex p-1.5 rounded-xl hover:bg-gray-500/10 text-gray-500 dark:text-gray-400 transition-colors cursor-pointer"
+                title="Collapse Sidebar"
+              >
+                <ChevronLeft size={16} />
+              </button>
 
-          {/* Mobile Close Button */}
-          <button
-            onClick={onCloseMobile}
-            className="md:hidden p-1.5 rounded-xl hover:bg-gray-500/10 text-gray-500 dark:text-gray-400 transition-colors cursor-pointer"
-            title="Close Drawer"
-          >
-            <X size={18} />
-          </button>
+              {/* Mobile Close Button */}
+              <button
+                onClick={onCloseMobile}
+                className="md:hidden p-1.5 rounded-xl hover:bg-gray-500/10 text-gray-500 dark:text-gray-400 transition-colors cursor-pointer"
+                title="Close Drawer"
+              >
+                <X size={18} />
+              </button>
+            </>
+          ) : (
+            /* Minimized Mode: Centered Clickable Logo Button */
+            <button
+              onClick={onToggleExpand}
+              className="mx-auto p-2.5 rounded-xl bg-gradient-to-br from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/20 cursor-pointer hover:scale-105 transition-all"
+              title="Expand Sidebar"
+            >
+              <Warehouse size={20} />
+            </button>
+          )}
         </div>
 
         {/* 2. Scrollable Navigation List (Middle Flex-1 with Internal Scrollbar) */}
@@ -103,13 +116,14 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = currentPath === item.path || (item.path !== '/' && currentPath.startsWith(item.path));
-            const showText = isExpanded || isMobileOpen;
 
             return (
               <button
                 key={item.path}
                 onClick={() => handleNavClick(item.path)}
-                className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`w-full flex items-center gap-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  showText ? 'px-3 justify-start' : 'px-0 justify-center'
+                } ${
                   isActive
                     ? 'bg-gradient-to-r from-cyan-500/20 to-sky-500/15 text-cyan-600 dark:text-cyan-300 border border-cyan-500/35 shadow-sm'
                     : 'text-gray-600 dark:text-gray-400 hover:bg-gray-500/10 hover:text-strong'
@@ -127,29 +141,33 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
         <div className="shrink-0 p-2.5 border-t border-gray-500/10 space-y-1.5 bg-gray-500/5 rounded-b-2xl">
           <button
             onClick={() => handleNavClick('/settings')}
-            className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`w-full flex items-center gap-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              showText ? 'px-3 justify-start' : 'px-0 justify-center'
+            } ${
               currentPath === '/settings'
                 ? 'bg-gradient-to-r from-cyan-500/20 to-sky-500/15 text-cyan-600 dark:text-cyan-300 border border-cyan-500/35'
                 : 'text-gray-600 dark:text-gray-400 hover:bg-gray-500/10'
             }`}
-            title={!(isExpanded || isMobileOpen) ? "Settings" : undefined}
+            title={!showText ? "Settings" : undefined}
           >
             <Settings size={18} className={currentPath === '/settings' ? 'text-cyan-500' : 'text-gray-400'} />
-            {(isExpanded || isMobileOpen) && <span>Settings</span>}
+            {showText && <span>Settings</span>}
           </button>
 
           <button
             onClick={toggleTheme}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-500/10 transition-all cursor-pointer"
-            title={!(isExpanded || isMobileOpen) ? `Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode` : undefined}
+            className={`w-full flex items-center gap-3 py-2 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-500/10 transition-all cursor-pointer ${
+              showText ? 'px-3 justify-start' : 'px-0 justify-center'
+            }`}
+            title={!showText ? `Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode` : undefined}
           >
             {theme === 'dark' ? <Sun size={18} className="text-amber-400" /> : <Moon size={18} className="text-sky-600" />}
-            {(isExpanded || isMobileOpen) && <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>}
+            {showText && <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>}
           </button>
 
           {/* User Profile Scope Card */}
           <div className="pt-1">
-            {(isExpanded || isMobileOpen) ? (
+            {showText ? (
               <div className="p-2.5 rounded-xl bg-gray-500/10 flex items-center justify-between border border-gray-500/10">
                 <div className="flex flex-col min-w-0 pr-1">
                   <span className="text-xs font-extrabold text-strong truncate">{user?.name || 'User'}</span>
