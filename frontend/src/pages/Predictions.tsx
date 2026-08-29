@@ -380,8 +380,85 @@ export const Predictions: React.FC = () => {
                       )}
                     </div>
                   ) : (
-                    <div className="p-8 text-center text-xs text-gray-500 border border-dashed border-gray-500/20 rounded-2xl">
-                      Click <strong className="text-cyan-500">Run predictions</strong> above to run real-time inference & SHAP feature explanations.
+                    <div className="space-y-4">
+                      {/* Standby Banner */}
+                      <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-gray-400 font-semibold block">Model Status:</span>
+                          <span className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/15 px-2.5 py-0.5 rounded-full border border-cyan-500/30 flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping inline-block" />
+                            <span>READY FOR INFERENCE</span>
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3 pt-1">
+                          <StatusBadge status="Safe" size="lg" />
+                          <div className="flex flex-col">
+                            <span className="text-xs font-bold text-strong">XGBoost Standby Baseline</span>
+                            <span className="text-[11px] text-gray-500">Click <strong className="text-cyan-500 font-bold">Run predictions</strong> above to execute inference</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* SHAP Feature Importance Placeholder */}
+                      <div>
+                        <span className="text-xs font-bold text-strong block mb-2">
+                          Expected Top SHAP Contributing Features:
+                        </span>
+                        <div className="space-y-2">
+                          <div className="p-3 rounded-xl bg-white/40 dark:bg-slate-900/40 border border-gray-500/10 text-xs flex items-center justify-between">
+                            <div>
+                              <span className="font-bold text-strong block">Temperature_C</span>
+                              <span className="text-[11px] text-gray-500">Primary Thermal Sensor Factor</span>
+                            </div>
+                            <span className="font-mono font-bold text-cyan-500">+0.420</span>
+                          </div>
+
+                          <div className="p-3 rounded-xl bg-white/40 dark:bg-slate-900/40 border border-gray-500/10 text-xs flex items-center justify-between">
+                            <div>
+                              <span className="font-bold text-strong block">Smoke_ppm</span>
+                              <span className="text-[11px] text-gray-500">Combustion Ignition Factor</span>
+                            </div>
+                            <span className="font-mono font-bold text-amber-500">+0.315</span>
+                          </div>
+
+                          <div className="p-3 rounded-xl bg-white/40 dark:bg-slate-900/40 border border-gray-500/10 text-xs flex items-center justify-between">
+                            <div>
+                              <span className="font-bold text-strong block">Thermal_Moisture_Index</span>
+                              <span className="text-[11px] text-gray-500">Engineered Domain Feature</span>
+                            </div>
+                            <span className="font-mono font-bold text-cyan-500">+0.180</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Initial Class Probability Spectrum Placeholder */}
+                      <div className="pt-3 border-t border-gray-500/10 space-y-2">
+                        <span className="text-xs font-bold text-strong block">
+                          Class Probability Spectrum (Baseline Preview):
+                        </span>
+                        <div className="space-y-1.5">
+                          {[
+                            { cls: 'Safe', prob: 0.945, active: true },
+                            { cls: 'High Temp Warning', prob: 0.025, active: false },
+                            { cls: 'Smoke Ignition Hazard', prob: 0.015, active: false },
+                            { cls: 'Rack Full', prob: 0.010, active: false },
+                            { cls: 'Motion Intrusion', prob: 0.005, active: false },
+                          ].map((item) => (
+                            <div key={item.cls} className="space-y-0.5">
+                              <div className="flex justify-between text-[11px] font-semibold text-strong">
+                                <span>{item.cls}</span>
+                                <span>{(item.prob * 100).toFixed(1)}%</span>
+                              </div>
+                              <div className="w-full h-1.5 rounded-full bg-gray-500/20 overflow-hidden">
+                                <div 
+                                  className={`h-full rounded-full ${item.active ? 'bg-cyan-500' : 'bg-gray-400/40'}`} 
+                                  style={{ width: `${item.prob * 100}%` }} 
+                                />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
