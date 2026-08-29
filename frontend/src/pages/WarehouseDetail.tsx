@@ -57,21 +57,21 @@ export const WarehouseDetail: React.FC<WarehouseDetailProps> = ({ warehouseId, o
 
   return (
     <div className="space-y-6 pb-12">
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4">
         <button
           onClick={onBack}
-          className="p-2.5 rounded-xl bg-gray-500/10 hover:bg-gray-500/20 text-strong transition-colors cursor-pointer"
+          className="p-2.5 rounded-xl bg-gray-500/10 hover:bg-gray-500/20 text-strong transition-colors cursor-pointer shrink-0"
         >
           <ArrowLeft size={18} />
         </button>
-        <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold text-strong tracking-tight">{warehouse.name}</h1>
-            <StatusBadge status={warehouse.latest_status || 'Safe'} />
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-strong tracking-tight truncate">{warehouse.name}</h1>
+            <StatusBadge status={warehouse.latest_status || 'Safe'} size="sm" />
           </div>
-          <p className="text-xs text-gray-500 flex items-center gap-1.5 mt-1">
-            <MapPin size={14} className="text-cyan-500" />
-            <span>{warehouse.district} District • Lat: {warehouse.latitude}, Lon: {warehouse.longitude}</span>
+          <p className="text-xs text-gray-500 flex items-center gap-1.5 mt-1 truncate">
+            <MapPin size={14} className="text-cyan-500 shrink-0" />
+            <span className="truncate">{warehouse.district} District • Lat: {warehouse.latitude}, Lon: {warehouse.longitude}</span>
           </p>
         </div>
       </div>
@@ -83,19 +83,19 @@ export const WarehouseDetail: React.FC<WarehouseDetailProps> = ({ warehouseId, o
             <button
               key={z.zone_id}
               onClick={() => setActiveZone(z.zone_id)}
-              className={`p-4 rounded-2xl border text-left transition-all cursor-pointer ${
+              className={`p-3.5 sm:p-4 rounded-2xl border text-left transition-all cursor-pointer ${
                 isActive
                   ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-600 dark:text-cyan-300 shadow-md'
                   : 'glass-panel hover:border-gray-500/30'
               }`}
             >
               <div className="flex items-center justify-between">
-                <span className="font-bold text-sm text-strong">Zone #{z.zone_id}</span>
+                <span className="font-bold text-xs sm:text-sm text-strong">Zone #{z.zone_id}</span>
                 <Layers size={16} className={isActive ? 'text-cyan-500' : 'text-gray-400'} />
               </div>
               <div className="mt-2 space-y-0.5">
                 <span className="text-xs font-medium block truncate">{z.commodity_type}</span>
-                <span className="text-[11px] text-gray-500 block">Capacity: {z.capacity_sacks} Sacks</span>
+                <span className="text-[10px] sm:text-[11px] text-gray-500 block truncate">Cap: {z.capacity_sacks} Sacks</span>
               </div>
             </button>
           );
@@ -103,7 +103,7 @@ export const WarehouseDetail: React.FC<WarehouseDetailProps> = ({ warehouseId, o
       </div>
 
       <GlassCard className="space-y-4">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
           <h3 className="font-bold text-sm text-strong">Recent Sensor Readings — Zone {activeZone}</h3>
           <span className="text-xs text-gray-500">Showing latest {readings?.readings.length || 0} readings</span>
         </div>
@@ -112,29 +112,29 @@ export const WarehouseDetail: React.FC<WarehouseDetailProps> = ({ warehouseId, o
           <table className="w-full text-left text-xs">
             <thead>
               <tr className="border-b border-gray-500/10 text-gray-500 uppercase tracking-wider">
-                <th className="pb-3 font-semibold">Timestamp</th>
-                <th className="pb-3 font-semibold">Status</th>
+                <th className="pb-3 font-semibold min-w-[120px]">Timestamp</th>
+                <th className="pb-3 font-semibold min-w-[100px]">Status</th>
                 <th className="pb-3 font-semibold">Temp (°C)</th>
                 <th className="pb-3 font-semibold">Humidity (%)</th>
                 <th className="pb-3 font-semibold">Smoke (PPM)</th>
                 <th className="pb-3 font-semibold">Motion</th>
-                <th className="pb-3 font-semibold">Sack Count</th>
+                <th className="pb-3 font-semibold min-w-[100px]">Sack Count</th>
                 <th className="pb-3 font-semibold">Occupancy</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-500/10">
               {readings?.readings.map((r, i) => (
                 <tr key={i} className="hover:bg-gray-500/5 transition-colors">
-                  <td className="py-3 font-mono text-gray-400">{r.Timestamp}</td>
-                  <td className="py-3">
+                  <td className="py-3 font-mono text-gray-400 whitespace-nowrap">{r.Timestamp}</td>
+                  <td className="py-3 whitespace-nowrap">
                     <StatusBadge status={r.Warehouse_Status} size="sm" />
                   </td>
-                  <td className="py-3 font-semibold text-strong">{r.Temperature_C}°C</td>
-                  <td className="py-3 font-semibold text-strong">{r['Humidity_%']}%</td>
-                  <td className="py-3 font-mono">{r.Smoke_ppm}</td>
-                  <td className="py-3 font-medium">{r.Motion ? 'Detected' : 'Clear'}</td>
-                  <td className="py-3 font-semibold">{r.Number_of_Sacks} / {r.Zone_Capacity_Sacks}</td>
-                  <td className="py-3 font-bold text-cyan-600 dark:text-cyan-400">{r.Occupancy_Pct}%</td>
+                  <td className="py-3 font-semibold text-strong whitespace-nowrap">{r.Temperature_C}°C</td>
+                  <td className="py-3 font-semibold text-strong whitespace-nowrap">{r['Humidity_%']}%</td>
+                  <td className="py-3 font-mono whitespace-nowrap">{r.Smoke_ppm}</td>
+                  <td className="py-3 font-medium whitespace-nowrap">{r.Motion ? 'Detected' : 'Clear'}</td>
+                  <td className="py-3 font-semibold whitespace-nowrap">{r.Number_of_Sacks} / {r.Zone_Capacity_Sacks}</td>
+                  <td className="py-3 font-bold text-cyan-600 dark:text-cyan-400 whitespace-nowrap">{r.Occupancy_Pct}%</td>
                 </tr>
               ))}
             </tbody>
