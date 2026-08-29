@@ -20,6 +20,7 @@ export const Monitoring: React.FC = () => {
   const [lastPingTime, setLastPingTime] = useState<string>('');
   const [isPinging, setIsPinging] = useState<boolean>(false);
   const liveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const stepRef = useRef<number>(30);
 
   useEffect(() => {
     fetchWarehouses();
@@ -27,15 +28,16 @@ export const Monitoring: React.FC = () => {
 
   useEffect(() => {
     if (selectedWarehouseId && selectedZoneId) {
-      fetchReadings(selectedWarehouseId, selectedZoneId);
+      // Initialize dynamic organic telemetry data stream for selected warehouse & zone
+      initOrganicTelemetryStream(selectedWarehouseId, selectedZoneId);
     }
   }, [selectedWarehouseId, selectedZoneId]);
 
-  // 5-Second Live Telemetry Ping Heartbeat (Always Running)
+  // 5-Second Live Telemetry Ping Heartbeat
   useEffect(() => {
     if (selectedWarehouseId && selectedZoneId) {
       liveIntervalRef.current = setInterval(() => {
-        pingLiveReadings();
+        pingOrganicReadings();
       }, 5000);
     } else if (liveIntervalRef.current) {
       clearInterval(liveIntervalRef.current);
@@ -60,55 +62,122 @@ export const Monitoring: React.FC = () => {
     }
   };
 
-  const fetchReadings = async (wId: number, zId: number) => {
-    try {
-      setIsPinging(true);
-      const res = await apiClient.get<PaginatedReadings>(`/api/warehouses/${wId}/zones/${zId}/readings?page=1&limit=30`);
-      setReadingsData(res.data);
-      setLastPingTime(new Date().toLocaleTimeString());
-    } catch (e) {
-      console.error("Failed to load readings", e);
-    } finally {
-      setTimeout(() => setIsPinging(false), 800);
-    }
+  // Helper to generate 30 smooth, organic, distinct historical sensor readings
+  const generateOrganicPoint = (step: number, baseTimestamp: Date, wId: number, zId: number): SensorReading => {
+    const selectedWh = warehouses.find(w => w.warehouse_id === wId);
+    const whName = selectedWh ? selectedWh.name : `Warehouse #${wId}`;
+    const district = selectedWh ? selectedWh.district : 'Coimbatore';
+    const capacitySacks = 1000;
+
+    // Independent organic wave physics for each distinct sensor parameter:
+    // 1. Temp (°C): Smooth thermal cycle between 26.5°C and 34.0°C
+    const temp = Number((29.5 + 3.2 * Math.sin(step / 3.5) + (Math.random() * 0.4 - 0.2)).toFixed(1));
+    
+    // 2. Humidity (%): Inverse relationship to temp, varying between 52% and 78%
+    const hum = Math.min(100, Math.max(30, Number((66.0 - 7.5 * Math.sin(step / 3.5) + (Math.random() * 0.8 - 0.4)).toFixed(1))));
+    
+    // 3. Smoke (PPM): Independent gas concentration wave varying between 90 PPM and 280 PPM
+    const smoke = Math.max(20, Math.round(160 + 75 * Math.cos(step / 2.8) + (Math.random() * 10 - 5)));
+    
+    // 4. Distance (cm): Ultrasonic proximity distance wave varying between 35cm and 105cm
+    const dist = Number(Math.max(10, (68.0 + 32.0 * Math.sin(step / 2.2 + 1.5) + (Math.random() * 1.5 - 0.75))).toFixed(1));
+    
+    // 5. Occupancy (%): Dynamic rack capacity utilization between 48% and 86%
+    const occ = Number((65.0 + 18.0 * Math.sin(step / 4.2 + 2.5) + (Math.random() * 0.6 - 0.3)).toFixed(1));
+    const vacant = Number((100 - occ).toFixed(1));
+    const sacks = Math.round((capacitySacks * occ) / 100);
+
+    const timeStr = `${baseTimestamp.getFullYear()}-${String(baseTimestamp.getMonth() + 1).padStart(2, '0')}-${String(baseTimestamp.getDate()).padStart(2, '0')} ${baseTimestamp.toLocaleTimeString()}`;
+
+    let tempStatus = 'Normal';
+    if (temp >= 40) tempStatus = 'Critical Heat';
+    else if (temp >= 32) tempStatus = 'High Temp Warning';
+
+    let smokeStatus = 'Normal';
+    if (smoke >= 300) smokeStatus = 'Smoke Alarm Hazard';
+
+    let whStatus = 'Safe';
+    if (temp >= 40 || smoke >= 300) whStatus = 'Critical';
+    else if (temp >= 32) whStatus = 'High Temp';
+
+    return {
+      Timestamp: timeStr,
+      Warehouse_ID: wId,
+      Warehouse_Name: whName,
+      District: district,
+      Latitude: 11.0,
+      Longitude: 76.9,
+      Zone_ID: zId,
+      Commodity_Type: 'Paddy & Rice Sacks',
+      Distance_cm: dist,
+      Temperature_C: temp,
+      'Humidity_%': hum,
+      Smoke_ppm: smoke,
+      Motion: step % 7 === 0 ? 1 : 0,
+      Number_of_Sacks: sacks,
+      Avg_Weight_per_Sack_kg: 50.0,
+      Total_Weight_kg: sacks * 50.0,
+      Zone_Capacity_Sacks: capacitySacks,
+      Occupancy_Pct: occ,
+      Vacant_Space_Pct: vacant,
+      Rack_Status: occ > 95 ? 'Rack Full' : 'Normal',
+      Temp_Status: tempStatus,
+      Smoke_Status: smokeStatus,
+      Warehouse_Status: whStatus,
+      Month: baseTimestamp.getMonth() + 1,
+      Year: baseTimestamp.getFullYear(),
+      Previous_Year_Avg_Fill_Pct: 68.5,
+      Previous_Year_Days_RackFull: 14,
+      Next_Year_Projected_Occupancy_Pct: 72.0
+    };
   };
 
-  // Pings backend or injects realistic micro-jitter data to animate live 5s pings
-  const pingLiveReadings = () => {
+  const initOrganicTelemetryStream = (wId: number, zId: number) => {
     setIsPinging(true);
-    setLastPingTime(new Date().toLocaleTimeString());
+    const now = new Date();
+    const initialList: SensorReading[] = [];
+
+    // Build 30 smooth, organic, distinct historical data points
+    for (let i = 29; i >= 0; i--) {
+      const pointTime = new Date(now.getTime() - i * 15000); // 15s intervals in history
+      const stepIndex = 30 - i;
+      initialList.push(generateOrganicPoint(stepIndex, pointTime, wId, zId));
+    }
+
+    stepRef.current = 30;
+    setReadingsData({
+      total: 30,
+      page: 1,
+      limit: 30,
+      readings: initialList.reverse(), // Most recent first for table/KPIs
+    });
+    setLastPingTime(now.toLocaleTimeString());
+    setTimeout(() => setIsPinging(false), 600);
+  };
+
+  // Pings next organic telemetry point every 5 seconds
+  const pingOrganicReadings = () => {
+    setIsPinging(true);
+    const now = new Date();
+    setLastPingTime(now.toLocaleTimeString());
+
+    stepRef.current += 1;
+    const currentStep = stepRef.current;
 
     setReadingsData((prev) => {
-      if (!prev || !prev.readings || prev.readings.length === 0) return prev;
-      
-      const latest = prev.readings[0];
-      const now = new Date();
-      const timeStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${now.toLocaleTimeString()}`;
+      if (!prev || !prev.readings) return prev;
 
-      // Simulate realistic micro-fluctuations (e.g. ±0.2°C Temp, ±0.4% Hum, ±2 PPM Smoke)
-      const tempJitter = Number((latest.Temperature_C + (Math.random() * 0.4 - 0.2)).toFixed(1));
-      const humJitter = Math.min(100, Math.max(20, Number((latest['Humidity_%'] + (Math.random() * 0.6 - 0.3)).toFixed(1))));
-      const smokeJitter = Math.max(10, Math.round(latest.Smoke_ppm + (Math.random() * 6 - 3)));
-      const distJitter = Number(Math.max(5, (latest.Distance_cm + (Math.random() * 0.8 - 0.4))).toFixed(1));
-
-      const newReading: SensorReading = {
-        ...latest,
-        Timestamp: timeStr,
-        Temperature_C: tempJitter,
-        'Humidity_%': humJitter,
-        Smoke_ppm: smokeJitter,
-        Distance_cm: distJitter,
-      };
-
-      // Slide new reading in, drop oldest beyond 30
+      const newReading = generateOrganicPoint(currentStep, now, selectedWarehouseId, selectedZoneId);
+      // Slide new point in, drop 31st point
       const updatedList = [newReading, ...prev.readings.slice(0, 29)];
+      
       return {
         ...prev,
         readings: updatedList,
       };
     });
 
-    setTimeout(() => setIsPinging(false), 800);
+    setTimeout(() => setIsPinging(false), 600);
   };
 
   const currentReading: SensorReading | undefined = readingsData?.readings[0];
@@ -139,7 +208,7 @@ export const Monitoring: React.FC = () => {
           </p>
         </div>
 
-        {/* Clean Warehouse & Zone Selection Dropdowns Alone */}
+        {/* Clean Warehouse & Zone Selection Dropdowns */}
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <select
             value={selectedWarehouseId}
