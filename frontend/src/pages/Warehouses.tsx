@@ -78,7 +78,7 @@ export const Warehouses: React.FC<WarehousesProps> = ({ onSelectWarehouse }) => 
                   {w.zones.map((z) => (
                     <span
                       key={z.zone_id}
-                      className="px-2 py-0.5 rounded-md bg-gray-500/10 text-[11px] font-medium text-gray-600 dark:text-gray-300"
+                      className="px-2.5 py-1 rounded-lg bg-slate-200/80 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-[11px] font-extrabold text-slate-800 dark:text-slate-200"
                     >
                       Zone {z.zone_id}: {z.commodity_type}
                     </span>

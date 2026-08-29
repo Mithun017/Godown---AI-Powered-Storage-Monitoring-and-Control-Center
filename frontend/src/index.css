@@ -6,12 +6,12 @@
   /* Light Theme - Clean Industrial Slate */
   --bg-gradient: linear-gradient(135deg, #F8FAFC 0%, #F1F5F9 50%, #E2E8F0 100%);
   --bg-base: #F8FAFC;
-  --glass-bg: rgba(255, 255, 255, 0.82);
-  --glass-border: rgba(15, 23, 42, 0.08);
-  --glass-border-hover: rgba(14, 165, 233, 0.35);
-  --glass-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.06), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+  --glass-bg: rgba(255, 255, 255, 0.92);
+  --glass-border: rgba(15, 23, 42, 0.12);
+  --glass-border-hover: rgba(14, 165, 233, 0.45);
+  --glass-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.08), 0 4px 12px -2px rgba(15, 23, 42, 0.04);
   --text-strong: #0F172A;
-  --text-primary: #334155;
+  --text-primary: #1E293B;
   --text-muted: #64748B;
   --accent-cyan: #0EA5E9;
   --accent-cyan-glow: rgba(14, 165, 233, 0.2);
@@ -22,12 +22,12 @@
   /* Dark Theme - Deep Tech Cybernetic Navy */
   --bg-gradient: radial-gradient(circle at 50% 0%, #1E293B 0%, #0F172A 60%, #0B132B 100%);
   --bg-base: #0B132B;
-  --glass-bg: rgba(15, 23, 42, 0.72);
-  --glass-border: rgba(255, 255, 255, 0.1);
-  --glass-border-hover: rgba(56, 189, 248, 0.4);
+  --glass-bg: rgba(15, 23, 42, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.15);
+  --glass-border-hover: rgba(56, 189, 248, 0.5);
   --glass-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.5), 0 0 20px 0 rgba(14, 165, 233, 0.05);
   --text-strong: #F8FAFC;
-  --text-primary: #CBD5E1;
+  --text-primary: #E2E8F0;
   --text-muted: #94A3B8;
   --accent-cyan: #38BDF8;
   --accent-cyan-glow: rgba(56, 189, 248, 0.25);
@@ -83,6 +83,29 @@ code, pre, .font-mono {
   color: var(--text-strong);
 }
 
+/* Cross-browser Form Element Normalization (Chrome, Edge, Firefox, Safari) */
+input, select, textarea, button {
+  font-family: inherit;
+}
+
+html:not(.dark) input[type="number"],
+html:not(.dark) input[type="text"],
+html:not(.dark) input[type="password"],
+html:not(.dark) select {
+  color: #0F172A !important;
+  background-color: #FFFFFF !important;
+  border-color: #CBD5E1 !important;
+}
+
+html.dark input[type="number"],
+html.dark input[type="text"],
+html.dark input[type="password"],
+html.dark select {
+  color: #F8FAFC !important;
+  background-color: #0F172A !important;
+  border-color: #334155 !important;
+}
+
 /* Custom High-Tech Glowing Pulse */
 @keyframes pulse-glow {
   0%, 100% {
@@ -110,10 +133,10 @@ code, pre, .font-mono {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.25);
+  background: rgba(148, 163, 184, 0.35);
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.45);
+  background: rgba(148, 163, 184, 0.55);
 }
