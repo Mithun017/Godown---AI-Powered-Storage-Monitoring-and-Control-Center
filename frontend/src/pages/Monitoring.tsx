@@ -383,21 +383,15 @@ export const Monitoring: React.FC = () => {
 
           <div className="h-64 sm:h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData}>
-                <defs>
-                  <linearGradient id="smokeGradient" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#FB8500" stopOpacity={0.45} />
-                    <stop offset="95%" stopColor="#FB8500" stopOpacity={0.0} />
-                  </linearGradient>
-                </defs>
+              <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
                 <XAxis dataKey="Timestamp" tick={{ fontSize: 9 }} tickFormatter={(ts) => ts.split(' ')[1] || ts} />
                 <YAxis tick={{ fontSize: 10 }} domain={['auto', 'auto']} />
                 <Tooltip contentStyle={{ background: '#0F172A', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }} />
                 <Legend />
                 <ReferenceLine y={300} label={{ value: 'Hazard Level (300 PPM)', fill: '#F97316', fontSize: 10 }} stroke="#F97316" strokeDasharray="3 3" />
-                <Area type="monotone" dataKey="Smoke_ppm" name="Smoke PPM" stroke="#FB8500" strokeWidth={2.5} fill="url(#smokeGradient)" />
-              </AreaChart>
+                <Line type="monotone" dataKey="Smoke_ppm" name="Smoke PPM" stroke="#FB8500" strokeWidth={2.5} dot={{ r: 3, fill: '#FB8500' }} />
+              </LineChart>
             </ResponsiveContainer>
           </div>
         </GlassCard>
