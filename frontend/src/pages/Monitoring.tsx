@@ -3,8 +3,7 @@ import type { Warehouse, PaginatedReadings, SensorReading } from '../types';
 import { apiClient } from '../api/client';
 import { GlassCard } from '../components/GlassCard';
 import { 
-  Activity, Thermometer, Droplets, Flame, Package, RefreshCw, Move, 
-  Pause, Play 
+  Activity, Thermometer, Droplets, Flame, Package, Move 
 } from 'lucide-react';
 import { 
   ResponsiveContainer, AreaChart, Area, LineChart, Line, XAxis, YAxis, 
@@ -18,7 +17,6 @@ export const Monitoring: React.FC = () => {
   const [readingsData, setReadingsData] = useState<PaginatedReadings | null>(null);
   
   // Real-time 5-second live ping stream state
-  const [isLiveStreaming, setIsLiveStreaming] = useState<boolean>(true);
   const [lastPingTime, setLastPingTime] = useState<string>('');
   const [isPinging, setIsPinging] = useState<boolean>(false);
   const liveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -33,9 +31,9 @@ export const Monitoring: React.FC = () => {
     }
   }, [selectedWarehouseId, selectedZoneId]);
 
-  // 5-Second Live Telemetry Ping Heartbeat
+  // 5-Second Live Telemetry Ping Heartbeat (Always Running)
   useEffect(() => {
-    if (isLiveStreaming && selectedWarehouseId && selectedZoneId) {
+    if (selectedWarehouseId && selectedZoneId) {
       liveIntervalRef.current = setInterval(() => {
         pingLiveReadings();
       }, 5000);
@@ -48,7 +46,7 @@ export const Monitoring: React.FC = () => {
         clearInterval(liveIntervalRef.current);
       }
     };
-  }, [isLiveStreaming, selectedWarehouseId, selectedZoneId]);
+  }, [selectedWarehouseId, selectedZoneId]);
 
   const fetchWarehouses = async () => {
     try {
@@ -118,7 +116,7 @@ export const Monitoring: React.FC = () => {
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Header Controls & Live Stream Heartbeat Indicator */}
+      {/* Header Controls & LIVE STREAM Badge */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-3">
@@ -126,26 +124,13 @@ export const Monitoring: React.FC = () => {
               Live Zone Telemetry Monitoring
             </h1>
             
-            {/* Live Pulsing Ping Badge */}
-            <div className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold flex items-center gap-1.5 transition-all ${
-              isLiveStreaming
-                ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/35'
-                : 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/35'
-            }`}>
-              {isLiveStreaming ? (
-                <>
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                  </span>
-                  <span>LIVE STREAM (5s Heartbeat)</span>
-                </>
-              ) : (
-                <>
-                  <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
-                  <span>STREAM PAUSED</span>
-                </>
-              )}
+            {/* Clean Pulsing "LIVE STREAM" Badge */}
+            <div className="px-2.5 py-1 rounded-full text-[10px] font-extrabold flex items-center gap-1.5 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/35">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span>LIVE STREAM</span>
             </div>
           </div>
 
@@ -154,6 +139,7 @@ export const Monitoring: React.FC = () => {
           </p>
         </div>
 
+        {/* Clean Warehouse & Zone Selection Dropdowns Alone */}
         <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <select
             value={selectedWarehouseId}
@@ -181,31 +167,6 @@ export const Monitoring: React.FC = () => {
               </option>
             ))}
           </select>
-
-          {/* Toggle Pause / Resume Live Stream Button */}
-          <button
-            onClick={() => setIsLiveStreaming(!isLiveStreaming)}
-            className={`px-3 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              isLiveStreaming
-                ? 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-600 dark:text-amber-300 border border-amber-500/30'
-                : 'bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30'
-            }`}
-            title={isLiveStreaming ? "Pause Live Stream" : "Resume Live Stream"}
-          >
-            {isLiveStreaming ? <Pause size={14} /> : <Play size={14} />}
-            <span>{isLiveStreaming ? 'Pause Stream' : 'Resume Stream'}</span>
-          </button>
-
-          {/* Manual Refresh Button */}
-          <button
-            onClick={() => fetchReadings(selectedWarehouseId, selectedZoneId)}
-            className={`p-2 rounded-xl bg-gray-500/10 hover:bg-gray-500/20 text-strong transition-all cursor-pointer ${
-              isPinging ? 'animate-spin text-cyan-500' : ''
-            }`}
-            title="Manual Telemetry Ping"
-          >
-            <RefreshCw size={16} />
-          </button>
         </div>
       </div>
 
