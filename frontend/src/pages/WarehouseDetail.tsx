@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import type { Warehouse, PaginatedReadings } from '../types';
 import { apiClient } from '../api/client';
 import { GlassCard } from '../components/GlassCard';
 import { StatusBadge } from '../components/StatusBadge';
 import { MapPin, ArrowLeft, Layers } from 'lucide-react';
 
-interface WarehouseDetailProps {
-  warehouseId: number;
-  onBack: () => void;
-}
+export const WarehouseDetail: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const warehouseId = Number(id) || 1;
 
-export const WarehouseDetail: React.FC<WarehouseDetailProps> = ({ warehouseId, onBack }) => {
   const [warehouse, setWarehouse] = useState<Warehouse | null>(null);
   const [readings, setReadings] = useState<PaginatedReadings | null>(null);
   const [activeZone, setActiveZone] = useState<number>(1);
@@ -59,8 +59,9 @@ export const WarehouseDetail: React.FC<WarehouseDetailProps> = ({ warehouseId, o
     <div className="space-y-6 pb-12">
       <div className="flex items-center gap-3 sm:gap-4">
         <button
-          onClick={onBack}
+          onClick={() => navigate('/warehouses')}
           className="p-2.5 rounded-xl bg-gray-500/10 hover:bg-gray-500/20 text-strong transition-colors cursor-pointer shrink-0"
+          title="Back to Warehouses List"
         >
           <ArrowLeft size={18} />
         </button>

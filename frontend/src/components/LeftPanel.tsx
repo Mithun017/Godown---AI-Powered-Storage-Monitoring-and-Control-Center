@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Home, Activity, GitBranch, LayoutGrid, Bell, BarChart2, 
   Users, Settings, Sun, Moon, ChevronLeft, LogOut, Warehouse, X
@@ -7,8 +8,6 @@ import { useAuthStore } from '../stores/authStore';
 import { useThemeStore } from '../stores/themeStore';
 
 interface LeftPanelProps {
-  currentPath: string;
-  onNavigate: (path: string) => void;
   isExpanded: boolean;
   onToggleExpand: () => void;
   isMobileOpen: boolean;
@@ -16,13 +15,14 @@ interface LeftPanelProps {
 }
 
 export const LeftPanel: React.FC<LeftPanelProps> = ({ 
-  currentPath, 
-  onNavigate, 
   isExpanded, 
   onToggleExpand,
   isMobileOpen,
   onCloseMobile
 }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname;
   const { user, logout } = useAuthStore();
   const { theme, toggleTheme } = useThemeStore();
 
@@ -40,7 +40,7 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
   }
 
   const handleNavClick = (path: string) => {
-    onNavigate(path);
+    navigate(path);
     onCloseMobile();
   };
 
@@ -71,12 +71,15 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
         <div className="shrink-0 p-3 border-b border-gray-500/10 flex items-center justify-between">
           {showText ? (
             <>
-              <div className="flex items-center gap-3 overflow-hidden">
-                <div className="p-2.5 rounded-xl bg-gradient-to-br from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/20 shrink-0">
+              <div 
+                onClick={() => handleNavClick('/')}
+                className="flex items-center gap-3 overflow-hidden cursor-pointer group"
+              >
+                <div className="p-2.5 rounded-xl bg-gradient-to-br from-cyan-500 to-sky-600 text-white shadow-md shadow-cyan-500/20 shrink-0 group-hover:scale-105 transition-transform">
                   <Warehouse size={20} />
                 </div>
                 <div className="flex flex-col min-w-0">
-                  <span className="font-extrabold text-xs tracking-tight text-strong truncate">TN Warehouses</span>
+                  <span className="font-extrabold text-xs tracking-tight text-strong truncate group-hover:text-cyan-500 transition-colors">TN Warehouses</span>
                   <span className="text-[10px] text-cyan-600 dark:text-cyan-400 font-semibold truncate">Control Center</span>
                 </div>
               </div>

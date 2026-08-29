@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { Warehouse } from '../types';
 import { apiClient } from '../api/client';
 import { GlassCard } from '../components/GlassCard';
 import { StatusBadge } from '../components/StatusBadge';
 import { Warehouse as WarehouseIcon, MapPin, ChevronRight, PieChart } from 'lucide-react';
 
-interface WarehousesProps {
-  onSelectWarehouse: (id: number) => void;
-}
-
-export const Warehouses: React.FC<WarehousesProps> = ({ onSelectWarehouse }) => {
+export const Warehouses: React.FC = () => {
+  const navigate = useNavigate();
   const [warehouses, setWarehouses] = useState<Warehouse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -50,7 +48,7 @@ export const Warehouses: React.FC<WarehousesProps> = ({ onSelectWarehouse }) => 
         {warehouses.map((w) => (
           <GlassCard
             key={w.warehouse_id}
-            onClick={() => onSelectWarehouse(w.warehouse_id)}
+            onClick={() => navigate(`/warehouses/${w.warehouse_id}`)}
             className="flex flex-col justify-between space-y-4 hover:border-cyan-500/40 cursor-pointer group"
           >
             <div className="space-y-3">
@@ -78,7 +76,7 @@ export const Warehouses: React.FC<WarehousesProps> = ({ onSelectWarehouse }) => 
                   {w.zones.map((z) => (
                     <span
                       key={z.zone_id}
-                      className="px-2.5 py-1 rounded-lg bg-slate-200/80 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-[11px] font-extrabold text-slate-800 dark:text-slate-200"
+                      className="px-2 py-0.5 rounded-md bg-gray-500/10 text-[11px] font-medium text-gray-600 dark:text-gray-300"
                     >
                       Zone {z.zone_id}: {z.commodity_type}
                     </span>

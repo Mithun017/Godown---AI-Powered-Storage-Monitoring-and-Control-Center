@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Warehouse, Menu, Sun, Moon } from 'lucide-react';
 import { useThemeStore } from '../stores/themeStore';
 
@@ -7,6 +8,7 @@ interface MobileHeaderProps {
 }
 
 export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenMobileMenu }) => {
+  const navigate = useNavigate();
   const { theme, toggleTheme } = useThemeStore();
 
   return (
@@ -19,12 +21,15 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenMobileMenu }) 
         >
           <Menu size={20} />
         </button>
-        <div className="flex items-center gap-2">
-          <div className="p-1.5 rounded-lg bg-gradient-to-br from-cyan-500 to-sky-600 text-white">
+        <div 
+          onClick={() => navigate('/')}
+          className="flex items-center gap-2 cursor-pointer group"
+        >
+          <div className="p-1.5 rounded-lg bg-gradient-to-br from-cyan-500 to-sky-600 text-white group-hover:scale-105 transition-transform">
             <Warehouse size={18} />
           </div>
           <div>
-            <h1 className="font-extrabold text-xs tracking-tight text-strong">TN Warehouses</h1>
+            <h1 className="font-extrabold text-xs tracking-tight text-strong group-hover:text-cyan-500 transition-colors">TN Warehouses</h1>
             <p className="text-[10px] text-cyan-600 dark:text-cyan-400 font-medium">Control Center</p>
           </div>
         </div>

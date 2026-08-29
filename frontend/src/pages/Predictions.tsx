@@ -121,13 +121,13 @@ export const Predictions: React.FC = () => {
   const liveCRS = ((statusForm.Smoke_ppm / 1000.0) * (statusForm.Temperature_C / 50.0)).toFixed(3);
   const liveCPI = (statusForm.Occupancy_Pct * (100.0 / (statusForm.Distance_cm + 1.0))).toFixed(2);
 
-  // Helper for correlation matrix cell styling (cross-browser vibrant contrast for Chrome & Edge)
+  // Helper for correlation matrix cell styling (high contrast for both Light & Dark themes)
   const getCellBg = (val: number, isDiag: boolean) => {
-    if (isDiag) return 'bg-cyan-100 dark:bg-cyan-950/80 text-cyan-900 dark:text-cyan-200 border-cyan-400 dark:border-cyan-600 font-extrabold shadow-sm';
-    if (val >= 0.8) return 'bg-rose-100 dark:bg-rose-950/80 text-rose-900 dark:text-rose-200 border-rose-400 dark:border-rose-600 font-extrabold shadow-sm';
-    if (val >= 0.7) return 'bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-200 border-amber-400 dark:border-amber-600 font-extrabold shadow-sm';
-    if (val >= 0.5) return 'bg-sky-100 dark:bg-sky-950/80 text-sky-900 dark:text-sky-200 border-sky-400 dark:border-sky-600 font-extrabold shadow-sm';
-    return 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-900 dark:text-emerald-200 border-emerald-400 dark:border-emerald-600 font-extrabold shadow-sm';
+    if (isDiag) return 'bg-cyan-500/20 dark:bg-cyan-500/30 text-cyan-950 dark:text-cyan-200 border-cyan-500/40 font-extrabold shadow-sm';
+    if (val >= 0.8) return 'bg-rose-500/20 dark:bg-rose-500/30 text-rose-950 dark:text-rose-200 border-rose-500/40 font-extrabold shadow-sm';
+    if (val >= 0.7) return 'bg-amber-500/20 dark:bg-amber-500/30 text-amber-950 dark:text-amber-200 border-amber-500/40 font-extrabold shadow-sm';
+    if (val >= 0.5) return 'bg-sky-500/20 dark:bg-sky-500/30 text-sky-950 dark:text-sky-200 border-sky-500/40 font-extrabold shadow-sm';
+    return 'bg-emerald-500/20 dark:bg-emerald-500/30 text-emerald-950 dark:text-emerald-200 border-emerald-500/40 font-extrabold shadow-sm';
   };
 
   return (
@@ -183,7 +183,7 @@ export const Predictions: React.FC = () => {
                 key={idx}
                 type="button"
                 onClick={() => setStatusForm(p.data)}
-                className="px-3 py-1 rounded-xl bg-slate-200/80 dark:bg-slate-800 hover:bg-cyan-500/20 border border-slate-300 dark:border-slate-700 text-xs font-extrabold text-slate-800 dark:text-slate-200 transition-all cursor-pointer"
+                className="px-3 py-1 rounded-xl bg-gray-500/10 hover:bg-cyan-500/20 hover:border-cyan-500/35 border border-gray-500/15 text-xs font-bold text-strong transition-all cursor-pointer"
               >
                 {p.name}
               </button>
@@ -202,69 +202,69 @@ export const Predictions: React.FC = () => {
                 <form onSubmit={handlePredictStatus} className="space-y-4">
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-[11px] font-extrabold text-slate-700 dark:text-slate-300 mb-1">Temperature (°C)</label>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">Temperature (°C)</label>
                       <input
                         type="number"
                         step="0.1"
                         value={statusForm.Temperature_C}
                         onChange={(e) => setStatusForm({ ...statusForm, Temperature_C: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-extrabold text-slate-900 dark:text-slate-100 outline-none focus:border-cyan-500 shadow-sm"
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-extrabold text-slate-700 dark:text-slate-300 mb-1">Humidity (%)</label>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">Humidity (%)</label>
                       <input
                         type="number"
                         step="0.1"
                         value={statusForm['Humidity_%']}
                         onChange={(e) => setStatusForm({ ...statusForm, 'Humidity_%': Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-extrabold text-slate-900 dark:text-slate-100 outline-none focus:border-cyan-500 shadow-sm"
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-extrabold text-slate-700 dark:text-slate-300 mb-1">Smoke (PPM)</label>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">Smoke (PPM)</label>
                       <input
                         type="number"
                         step="0.1"
                         value={statusForm.Smoke_ppm}
                         onChange={(e) => setStatusForm({ ...statusForm, Smoke_ppm: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-extrabold text-slate-900 dark:text-slate-100 outline-none focus:border-cyan-500 shadow-sm"
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-extrabold text-slate-700 dark:text-slate-300 mb-1">Distance (cm)</label>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">Distance (cm)</label>
                       <input
                         type="number"
                         step="0.1"
                         value={statusForm.Distance_cm}
                         onChange={(e) => setStatusForm({ ...statusForm, Distance_cm: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-extrabold text-slate-900 dark:text-slate-100 outline-none focus:border-cyan-500 shadow-sm"
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-extrabold text-slate-700 dark:text-slate-300 mb-1">PIR Motion (0/1)</label>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">PIR Motion (0/1)</label>
                       <input
                         type="number"
                         min="0"
                         max="1"
                         value={statusForm.Motion}
                         onChange={(e) => setStatusForm({ ...statusForm, Motion: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-extrabold text-slate-900 dark:text-slate-100 outline-none focus:border-cyan-500 shadow-sm"
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-extrabold text-slate-700 dark:text-slate-300 mb-1">Occupancy %</label>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">Occupancy %</label>
                       <input
                         type="number"
                         step="0.1"
                         value={statusForm.Occupancy_Pct}
                         onChange={(e) => setStatusForm({ ...statusForm, Occupancy_Pct: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-extrabold text-slate-900 dark:text-slate-100 outline-none focus:border-cyan-500 shadow-sm"
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
                       />
                     </div>
                   </div>
@@ -294,21 +294,21 @@ export const Predictions: React.FC = () => {
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-                  <div className="p-3 rounded-xl bg-amber-500/15 border border-amber-500/30">
-                    <span className="text-[10px] text-amber-800 dark:text-amber-300 font-bold block">Thermal-Moisture Index (TMI)</span>
-                    <span className="text-base font-extrabold text-amber-600 dark:text-amber-400">{liveTMI}</span>
+                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                    <span className="text-[10px] text-gray-400 font-semibold block">Thermal-Moisture Index (TMI)</span>
+                    <span className="text-base font-extrabold text-amber-500">{liveTMI}</span>
                     <span className="text-[10px] text-gray-500 block">Grain Spoilage Risk</span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-rose-500/15 border border-rose-500/30">
-                    <span className="text-[10px] text-rose-800 dark:text-rose-300 font-bold block">Combustion Risk Score (CRS)</span>
-                    <span className="text-base font-extrabold text-rose-600 dark:text-rose-400">{liveCRS}</span>
+                  <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20">
+                    <span className="text-[10px] text-gray-400 font-semibold block">Combustion Risk Score (CRS)</span>
+                    <span className="text-base font-extrabold text-rose-500">{liveCRS}</span>
                     <span className="text-[10px] text-gray-500 block">Smoke Ignition Hazard</span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-cyan-500/15 border border-cyan-500/30">
-                    <span className="text-[10px] text-cyan-800 dark:text-cyan-300 font-bold block">Capacity Pressure Index</span>
-                    <span className="text-base font-extrabold text-cyan-600 dark:text-cyan-400">{liveCPI}</span>
+                  <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+                    <span className="text-[10px] text-gray-400 font-semibold block">Capacity Pressure Index</span>
+                    <span className="text-base font-extrabold text-cyan-500">{liveCPI}</span>
                     <span className="text-[10px] text-gray-500 block">Rack Load Stress</span>
                   </div>
                 </div>
@@ -339,7 +339,7 @@ export const Predictions: React.FC = () => {
                         </span>
                         <div className="space-y-2">
                           {statusResult.top_features.map((feat, idx) => (
-                            <div key={idx} className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs flex items-center justify-between">
+                            <div key={idx} className="p-3 rounded-xl bg-white/40 dark:bg-slate-900/40 border border-gray-500/10 text-xs flex items-center justify-between">
                               <div>
                                 <span className="font-extrabold text-strong block">{feat.feature}</span>
                                 <span className="text-[11px] text-gray-500">Value: {feat.value}</span>
@@ -404,11 +404,11 @@ export const Predictions: React.FC = () => {
                 </h3>
                 <p className="text-xs text-gray-500">Pairwise Pearson correlation coefficients across environmental parameters</p>
               </div>
-              <div className="flex flex-wrap items-center gap-2 text-[10px] font-extrabold">
-                <span className="px-2.5 py-1 rounded-lg bg-emerald-100 dark:bg-emerald-950/80 text-emerald-900 dark:text-emerald-300 border border-emerald-400 dark:border-emerald-700">Normal (0.0–0.5)</span>
-                <span className="px-2.5 py-1 rounded-lg bg-sky-100 dark:bg-sky-950/80 text-sky-900 dark:text-sky-300 border border-sky-400 dark:border-sky-700">Moderate (0.5–0.7)</span>
-                <span className="px-2.5 py-1 rounded-lg bg-amber-100 dark:bg-amber-950/80 text-amber-900 dark:text-amber-300 border border-amber-400 dark:border-amber-700">High (0.7–0.8)</span>
-                <span className="px-2.5 py-1 rounded-lg bg-rose-100 dark:bg-rose-950/80 text-rose-900 dark:text-rose-300 border border-rose-400 dark:border-rose-700">Risk (&gt;0.8)</span>
+              <div className="flex items-center gap-2 text-[10px] font-bold">
+                <span className="px-2 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-900 dark:text-emerald-300 border border-emerald-500/30">Normal (0.0–0.5)</span>
+                <span className="px-2 py-0.5 rounded-lg bg-sky-500/20 text-sky-900 dark:text-sky-300 border border-sky-500/30">Moderate (0.5–0.7)</span>
+                <span className="px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-950 dark:text-amber-300 border border-amber-500/30">High (0.7–0.8)</span>
+                <span className="px-2 py-0.5 rounded-lg bg-rose-500/20 text-rose-950 dark:text-rose-300 border border-rose-500/30">Risk (&gt;0.8)</span>
               </div>
             </div>
 
@@ -418,14 +418,14 @@ export const Predictions: React.FC = () => {
                 <div className="grid grid-cols-5 gap-2 text-center text-xs font-bold mb-2">
                   <div className="text-left text-gray-400 font-mono text-[11px]">Param</div>
                   {correlationParams.map((p, idx) => (
-                    <div key={idx} className="p-2.5 rounded-xl bg-slate-200/80 dark:bg-slate-800 text-strong truncate font-extrabold">{p}</div>
+                    <div key={idx} className="p-2.5 rounded-xl bg-gray-500/10 text-strong truncate font-extrabold">{p}</div>
                   ))}
                 </div>
 
                 {/* Matrix Rows */}
                 {correlationMatrix.map((row, rIdx) => (
                   <div key={rIdx} className="grid grid-cols-5 gap-2 text-center text-xs mb-2">
-                    <div className="p-2.5 rounded-xl bg-slate-200/80 dark:bg-slate-800 text-left font-extrabold text-strong truncate flex items-center">
+                    <div className="p-2.5 rounded-xl bg-gray-500/10 text-left font-extrabold text-strong truncate flex items-center">
                       {correlationParams[rIdx]}
                     </div>
                     {row.map((val, cIdx) => {
@@ -460,7 +460,7 @@ export const Predictions: React.FC = () => {
 
                 <form onSubmit={handlePredictYearly} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                       Previous Year Average Fill %
                     </label>
                     <input
@@ -468,19 +468,19 @@ export const Predictions: React.FC = () => {
                       step="0.1"
                       value={yearlyForm.Previous_Year_Avg_Fill_Pct}
                       onChange={(e) => setYearlyForm({ ...yearlyForm, Previous_Year_Avg_Fill_Pct: Number(e.target.value) })}
-                      className="w-full px-3 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none focus:border-cyan-500 shadow-sm"
+                      className="w-full px-3 py-2.5 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-semibold text-strong outline-none"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    <label className="block text-xs font-semibold text-gray-700 dark:text-gray-300 mb-1">
                       Previous Year Days Rack Full
                     </label>
                     <input
                       type="number"
                       value={yearlyForm.Previous_Year_Days_RackFull}
                       onChange={(e) => setYearlyForm({ ...yearlyForm, Previous_Year_Days_RackFull: Number(e.target.value) })}
-                      className="w-full px-3 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 text-xs font-bold text-slate-900 dark:text-slate-100 outline-none focus:border-cyan-500 shadow-sm"
+                      className="w-full px-3 py-2.5 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-semibold text-strong outline-none"
                     />
                   </div>
 
