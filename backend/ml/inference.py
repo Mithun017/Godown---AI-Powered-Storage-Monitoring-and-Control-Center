@@ -2,7 +2,14 @@ import os
 import joblib
 import pandas as pd
 import numpy as np
-import shap
+
+# Safe optional SHAP import with fallback to native XGBoost feature importances
+try:
+    import shap
+    SHAP_AVAILABLE = True
+except ImportError:
+    shap = None
+    SHAP_AVAILABLE = False
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ARTIFACTS_DIR = os.path.join(BASE_DIR, "ml", "artifacts")
@@ -20,11 +27,13 @@ def load_ml_models():
     if os.path.exists(clf_path):
         classifier_data = joblib.load(clf_path)
         print("Classifier model loaded successfully.")
-        try:
-            tree_explainer = shap.TreeExplainer(classifier_data["model"])
-            print("SHAP TreeExplainer initialized successfully.")
-        except Exception as e:
-            print(f"Warning: Could not initialize SHAP TreeExplainer: {e}")
+        if SHAP_AVAILABLE:
+            try:
+                tree_explainer = shap.TreeExplainer(classifier_data["model"])
+                print("SHAP TreeExplainer initialized successfully.")
+            except Exception as e:
+                print(f"Warning: Could not initialize SHAP TreeExplainer: {e}")
+                tree_explainer = None
 
     if os.path.exists(fore_path):
         forecaster_data = joblib.load(fore_path)
@@ -67,7 +76,7 @@ def predict_zone_status(input_data: dict) -> dict:
         class_probs[class_name] = round(float(probs[idx]), 4)
 
     top_features = []
-    if tree_explainer is not None:
+    if SHAP_AVAILABLE and tree_explainer is not None:
         try:
             shap_values = tree_explainer.shap_values(df)
             if isinstance(shap_values, list):
@@ -96,7 +105,7 @@ def predict_zone_status(input_data: dict) -> dict:
             print(f"SHAP calculation fallback: {e}")
 
     if not top_features:
-        # Fallback to feature_importances_ if SHAP fails
+        # Fallback to feature_importances_ if SHAP is absent or fails
         fi = model.feature_importances_
         pairs = sorted(zip(features, df.iloc[0], fi), key=lambda x: x[2], reverse=True)
         top_features = [{
