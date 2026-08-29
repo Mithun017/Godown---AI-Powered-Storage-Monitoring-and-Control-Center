@@ -121,13 +121,13 @@ export const Predictions: React.FC = () => {
   const liveCRS = ((statusForm.Smoke_ppm / 1000.0) * (statusForm.Temperature_C / 50.0)).toFixed(3);
   const liveCPI = (statusForm.Occupancy_Pct * (100.0 / (statusForm.Distance_cm + 1.0))).toFixed(2);
 
-  // Helper for correlation matrix cell styling
+  // Helper for correlation matrix cell styling (high contrast for both Light & Dark themes)
   const getCellBg = (val: number, isDiag: boolean) => {
-    if (isDiag) return 'bg-cyan-500/25 text-cyan-300 font-bold border-cyan-500/40';
-    if (val >= 0.8) return 'bg-rose-500/25 text-rose-300 font-bold border-rose-500/35';
-    if (val >= 0.7) return 'bg-amber-500/25 text-amber-300 font-bold border-amber-500/35';
-    if (val >= 0.5) return 'bg-sky-500/20 text-sky-300 font-bold border-sky-500/30';
-    return 'bg-emerald-500/15 text-emerald-300 font-bold border-emerald-500/25';
+    if (isDiag) return 'bg-cyan-500/20 dark:bg-cyan-500/30 text-cyan-950 dark:text-cyan-200 border-cyan-500/40 font-extrabold shadow-sm';
+    if (val >= 0.8) return 'bg-rose-500/20 dark:bg-rose-500/30 text-rose-950 dark:text-rose-200 border-rose-500/40 font-extrabold shadow-sm';
+    if (val >= 0.7) return 'bg-amber-500/20 dark:bg-amber-500/30 text-amber-950 dark:text-amber-200 border-amber-500/40 font-extrabold shadow-sm';
+    if (val >= 0.5) return 'bg-sky-500/20 dark:bg-sky-500/30 text-sky-950 dark:text-sky-200 border-sky-500/40 font-extrabold shadow-sm';
+    return 'bg-emerald-500/20 dark:bg-emerald-500/30 text-emerald-950 dark:text-emerald-200 border-emerald-500/40 font-extrabold shadow-sm';
   };
 
   return (
@@ -269,7 +269,6 @@ export const Predictions: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Renamed Button: "Run predictions" */}
                   <button
                     type="submit"
                     disabled={isStatusLoading}
@@ -395,21 +394,21 @@ export const Predictions: React.FC = () => {
             </div>
           </div>
 
-          {/* 4x4 Parameter Correlation Matrix (Heatmap Grid) */}
+          {/* Sensor Matrix (Heatmap Grid) */}
           <GlassCard className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-500/10 pb-3">
               <div>
-                <h3 className="font-extrabold text-sm text-strong flex items-center gap-2">
+                <h3 className="font-extrabold text-base text-strong flex items-center gap-2">
                   <Grid size={18} className="text-cyan-500" />
-                  <span>4 × 4 Sensor Parameter Correlation Matrix</span>
+                  <span>Sensor Matrix</span>
                 </h3>
                 <p className="text-xs text-gray-500">Pairwise Pearson correlation coefficients across environmental parameters</p>
               </div>
               <div className="flex items-center gap-2 text-[10px] font-bold">
-                <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400">Normal (0.0–0.5)</span>
-                <span className="px-2 py-0.5 rounded bg-sky-500/20 text-sky-400">Moderate (0.5–0.7)</span>
-                <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400">High (0.7–0.8)</span>
-                <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400">Risk (&gt;0.8)</span>
+                <span className="px-2 py-0.5 rounded-lg bg-emerald-500/20 text-emerald-900 dark:text-emerald-300 border border-emerald-500/30">Normal (0.0–0.5)</span>
+                <span className="px-2 py-0.5 rounded-lg bg-sky-500/20 text-sky-900 dark:text-sky-300 border border-sky-500/30">Moderate (0.5–0.7)</span>
+                <span className="px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-950 dark:text-amber-300 border border-amber-500/30">High (0.7–0.8)</span>
+                <span className="px-2 py-0.5 rounded-lg bg-rose-500/20 text-rose-950 dark:text-rose-300 border border-rose-500/30">Risk (&gt;0.8)</span>
               </div>
             </div>
 
@@ -419,14 +418,14 @@ export const Predictions: React.FC = () => {
                 <div className="grid grid-cols-5 gap-2 text-center text-xs font-bold mb-2">
                   <div className="text-left text-gray-400 font-mono text-[11px]">Param</div>
                   {correlationParams.map((p, idx) => (
-                    <div key={idx} className="p-2 rounded-xl bg-gray-500/10 text-strong truncate">{p}</div>
+                    <div key={idx} className="p-2.5 rounded-xl bg-gray-500/10 text-strong truncate font-extrabold">{p}</div>
                   ))}
                 </div>
 
                 {/* Matrix Rows */}
                 {correlationMatrix.map((row, rIdx) => (
                   <div key={rIdx} className="grid grid-cols-5 gap-2 text-center text-xs mb-2">
-                    <div className="p-2.5 rounded-xl bg-gray-500/10 text-left font-bold text-strong truncate flex items-center">
+                    <div className="p-2.5 rounded-xl bg-gray-500/10 text-left font-extrabold text-strong truncate flex items-center">
                       {correlationParams[rIdx]}
                     </div>
                     {row.map((val, cIdx) => {
@@ -434,7 +433,7 @@ export const Predictions: React.FC = () => {
                       return (
                         <div
                           key={cIdx}
-                          className={`p-3 rounded-xl border text-xs transition-all hover:scale-105 cursor-pointer ${getCellBg(val, isDiag)}`}
+                          className={`p-3 rounded-xl border text-xs sm:text-sm font-extrabold transition-all hover:scale-105 cursor-pointer ${getCellBg(val, isDiag)}`}
                           title={`${correlationParams[rIdx]} vs ${correlationParams[cIdx]}: ${val > 0 ? '+' : ''}${val.toFixed(2)} correlation`}
                         >
                           {val > 0 ? `+${val.toFixed(2)}` : val.toFixed(2)}
