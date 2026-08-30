@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 from typing import Optional, List, Dict, Any
 
 class ChatMessage(BaseModel):
@@ -12,6 +12,8 @@ class ChatRequest(BaseModel):
     conversation_history: Optional[List[ChatMessage]] = []
 
 class ChatResponse(BaseModel):
+    model_config = ConfigDict(protected_namespaces=())
+    
     response: str
     grounded_context: Optional[Dict[str, Any]] = None
     latency_ms: float
