@@ -5,7 +5,7 @@ import { GlassCard } from '../components/GlassCard';
 import { StatusBadge } from '../components/StatusBadge';
 import { 
   Sparkles, AlertCircle, ArrowRight, TrendingUp, Info, 
-  Grid, Cpu, Activity, ShieldCheck, Thermometer, Flame, Package
+  Grid, Cpu, Activity
 } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 
@@ -286,106 +286,31 @@ export const Predictions: React.FC = () => {
                 </form>
               </GlassCard>
 
-              {/* Custom Engineered Domain Features Card */}
-              <GlassCard className="space-y-3">
-                <h3 className="font-bold text-xs text-strong flex items-center gap-2 border-b border-gray-500/10 pb-2">
-                  <Cpu size={15} className="text-cyan-500" />
+              {/* Custom Engineered Domain Features Card (Image 3) */}
+              <GlassCard className="space-y-3.5">
+                <h3 className="font-bold text-xs text-strong flex items-center gap-2 border-b border-gray-500/10 pb-2.5">
+                  <Cpu size={16} className="text-cyan-500" />
                   <span>Real-Time Engineered Feature Metrics</span>
                 </h3>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-xs">
-                  <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20">
-                    <span className="text-[10px] text-gray-400 font-semibold block">Thermal-Moisture Index (TMI)</span>
-                    <span className="text-base font-extrabold text-amber-500">{liveTMI}</span>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+                  <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20">
+                    <span className="text-[10px] text-gray-400 font-semibold block mb-1">Thermal-Moisture Index (TMI)</span>
+                    <span className="text-xl font-extrabold text-amber-500 block mb-0.5">{liveTMI}</span>
                     <span className="text-[10px] text-gray-500 block">Grain Spoilage Risk</span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20">
-                    <span className="text-[10px] text-gray-400 font-semibold block">Combustion Risk Score (CRS)</span>
-                    <span className="text-base font-extrabold text-rose-500">{liveCRS}</span>
+                  <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/20">
+                    <span className="text-[10px] text-gray-400 font-semibold block mb-1">Combustion Risk Score (CRS)</span>
+                    <span className="text-xl font-extrabold text-rose-500 block mb-0.5">{liveCRS}</span>
                     <span className="text-[10px] text-gray-500 block">Smoke Ignition Hazard</span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
-                    <span className="text-[10px] text-gray-400 font-semibold block">Capacity Pressure Index</span>
-                    <span className="text-base font-extrabold text-cyan-500">{liveCPI}</span>
+                  <div className="p-3.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+                    <span className="text-[10px] text-gray-400 font-semibold block mb-1">Capacity Pressure Index</span>
+                    <span className="text-xl font-extrabold text-cyan-500 block mb-0.5">{liveCPI}</span>
                     <span className="text-[10px] text-gray-500 block">Rack Load Stress</span>
                   </div>
-                </div>
-              </GlassCard>
-
-              {/* AI Automated Response & Safeguard Protocol Card */}
-              <GlassCard className="space-y-3.5">
-                <div className="flex items-center justify-between border-b border-gray-500/10 pb-2.5">
-                  <h3 className="font-bold text-xs text-strong flex items-center gap-2">
-                    <ShieldCheck size={16} className="text-cyan-500" />
-                    <span>AI Automated Mitigation & Response Protocol</span>
-                  </h3>
-                  <span className="text-[10px] font-extrabold text-emerald-600 dark:text-emerald-400 bg-emerald-500/15 px-2 py-0.5 rounded-full border border-emerald-500/30 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
-                    <span>AUTO-PROTOCOL ACTIVE</span>
-                  </span>
-                </div>
-
-                <div className="space-y-2.5 text-xs">
-                  {/* Action 1: Thermal & HVAC Control */}
-                  <div className="p-3 rounded-xl bg-white/40 dark:bg-slate-900/40 border border-gray-500/10 flex items-center justify-between">
-                    <div className="space-y-0.5 min-w-0 pr-2">
-                      <div className="flex items-center gap-2">
-                        <Thermometer size={14} className="text-amber-500 shrink-0" />
-                        <span className="font-bold text-strong truncate">HVAC & Exhaust Fan Control</span>
-                      </div>
-                      <p className="text-[11px] text-gray-500 truncate">Airflow velocity adjustment for thermal control</p>
-                    </div>
-                    <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-lg shrink-0 ${
-                      statusForm.Temperature_C > 35 || Number(liveTMI) > 28
-                        ? 'bg-amber-500/20 text-amber-500 border border-amber-500/30'
-                        : 'bg-cyan-500/15 text-cyan-500 border border-cyan-500/25'
-                    }`}>
-                      {statusForm.Temperature_C > 35 || Number(liveTMI) > 28 ? 'HIGH VENTILATION' : 'NORMAL CIRCULATION'}
-                    </span>
-                  </div>
-
-                  {/* Action 2: Gas & Fire Isolation */}
-                  <div className="p-3 rounded-xl bg-white/40 dark:bg-slate-900/40 border border-gray-500/10 flex items-center justify-between">
-                    <div className="space-y-0.5 min-w-0 pr-2">
-                      <div className="flex items-center gap-2">
-                        <Flame size={14} className="text-rose-500 shrink-0" />
-                        <span className="font-bold text-strong truncate">Gas Isolation & Fire Siren Circuit</span>
-                      </div>
-                      <p className="text-[11px] text-gray-500 truncate">MQ gas sensor interlock & automated dispatch</p>
-                    </div>
-                    <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-lg shrink-0 ${
-                      statusForm.Smoke_ppm > 300 || Number(liveCRS) > 0.6
-                        ? 'bg-rose-500/20 text-rose-500 border border-rose-500/30 animate-pulse'
-                        : 'bg-emerald-500/15 text-emerald-500 border border-emerald-500/25'
-                    }`}>
-                      {statusForm.Smoke_ppm > 300 || Number(liveCRS) > 0.6 ? 'FIRE LOCKDOWN' : 'CIRCUIT ARMED'}
-                    </span>
-                  </div>
-
-                  {/* Action 3: AGV Rack Load Distribution */}
-                  <div className="p-3 rounded-xl bg-white/40 dark:bg-slate-900/40 border border-gray-500/10 flex items-center justify-between">
-                    <div className="space-y-0.5 min-w-0 pr-2">
-                      <div className="flex items-center gap-2">
-                        <Package size={14} className="text-cyan-500 shrink-0" />
-                        <span className="font-bold text-strong truncate">Autonomous AGV Sack Allocation</span>
-                      </div>
-                      <p className="text-[11px] text-gray-500 truncate">Automated load transfer to vacant godown racks</p>
-                    </div>
-                    <span className={`text-[10px] font-extrabold px-2.5 py-1 rounded-lg shrink-0 ${
-                      statusForm.Occupancy_Pct > 90 || Number(liveCPI) > 220
-                        ? 'bg-purple-500/20 text-purple-400 border border-purple-500/30'
-                        : 'bg-cyan-500/15 text-cyan-500 border border-cyan-500/25'
-                    }`}>
-                      {statusForm.Occupancy_Pct > 90 || Number(liveCPI) > 220 ? 'RACK DIVERSIFY' : 'OPTIMAL LOAD'}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="pt-2 border-t border-gray-500/10 flex items-center justify-between text-[11px] text-gray-500">
-                  <span>Safety Interlocks: <strong className="text-emerald-500 font-bold">3 / 3 Online</strong></span>
-                  <span>Execution Latency: <strong className="text-strong font-mono font-bold">12ms</strong></span>
                 </div>
               </GlassCard>
             </div>
