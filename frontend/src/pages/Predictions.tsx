@@ -192,7 +192,7 @@ export const Predictions: React.FC = () => {
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
             {/* Input Form & Custom Domain Features */}
-            <div className="lg:col-span-6 space-y-4">
+            <div className="lg:col-span-6 flex flex-col justify-between space-y-4">
               <GlassCard>
                 <h3 className="font-bold text-sm text-strong mb-4 flex items-center gap-2">
                   <Activity size={16} className="text-cyan-500" />
@@ -287,7 +287,7 @@ export const Predictions: React.FC = () => {
               </GlassCard>
 
               {/* Unified Real-Time Engineered Feature Metrics & Safety KPIs Card */}
-              <GlassCard className="space-y-3.5">
+              <GlassCard className="flex-1 flex flex-col justify-between space-y-3.5">
                 <div className="flex items-center justify-between border-b border-gray-500/10 pb-2.5">
                   <h3 className="font-extrabold text-xs text-strong flex items-center gap-2">
                     <Cpu size={16} className="text-cyan-500" />
