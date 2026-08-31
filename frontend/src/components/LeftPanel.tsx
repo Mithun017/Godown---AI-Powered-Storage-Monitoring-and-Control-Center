@@ -2,10 +2,9 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Home, Activity, GitBranch, LayoutGrid, Bell, BarChart2, 
-  Users, Settings, Sun, Moon, ChevronLeft, LogOut, Warehouse, X
+  Users, Settings, ChevronLeft, LogOut, Warehouse, X
 } from 'lucide-react';
 import { useAuthStore } from '../stores/authStore';
-import { useThemeStore } from '../stores/themeStore';
 
 interface LeftPanelProps {
   isExpanded: boolean;
@@ -24,7 +23,6 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
   const location = useLocation();
   const currentPath = location.pathname;
   const { user, logout } = useAuthStore();
-  const { theme, toggleTheme } = useThemeStore();
 
   const navItems = [
     { label: 'Dashboard', path: '/', icon: Home },
@@ -157,16 +155,6 @@ export const LeftPanel: React.FC<LeftPanelProps> = ({
             {showText && <span>Settings</span>}
           </button>
 
-          <button
-            onClick={toggleTheme}
-            className={`w-full flex items-center gap-3 py-2 rounded-xl text-xs font-bold text-gray-600 dark:text-gray-400 hover:bg-gray-500/10 transition-all cursor-pointer ${
-              showText ? 'px-3 justify-start' : 'px-0 justify-center'
-            }`}
-            title={!showText ? `Switch to ${theme === 'dark' ? 'Light' : 'Dark'} Mode` : undefined}
-          >
-            {theme === 'dark' ? <Sun size={18} className="text-amber-400" /> : <Moon size={18} className="text-sky-600" />}
-            {showText && <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>}
-          </button>
 
           {/* User Profile Scope Card */}
           <div className="pt-1">

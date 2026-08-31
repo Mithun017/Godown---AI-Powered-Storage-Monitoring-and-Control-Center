@@ -1,12 +1,10 @@
 import React from 'react';
 import { useAuthStore } from '../stores/authStore';
-import { useThemeStore } from '../stores/themeStore';
 import { GlassCard } from '../components/GlassCard';
-import { Sun, Moon, User, LogOut } from 'lucide-react';
+import { Moon, User, LogOut } from 'lucide-react';
 
 export const SettingsPage: React.FC = () => {
   const { user, logout } = useAuthStore();
-  const { theme, toggleTheme } = useThemeStore();
 
   return (
     <div className="space-y-6 pb-12 max-w-3xl">
@@ -49,19 +47,12 @@ export const SettingsPage: React.FC = () => {
 
         <div className="pt-4 border-t border-gray-500/10 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            {theme === 'dark' ? <Moon size={20} className="text-amber-400" /> : <Sun size={20} className="text-sky-600" />}
+            <Moon size={20} className="text-cyan-400" />
             <div>
               <span className="font-bold text-sm text-strong block">Visual Theme</span>
-              <span className="text-xs text-gray-500 block">Currently active: {theme === 'dark' ? 'Dark Theme' : 'Light Theme'}</span>
+              <span className="text-xs text-gray-500 block">Enforced Cybernetic Dark Tech Mode</span>
             </div>
           </div>
-
-          <button
-            onClick={toggleTheme}
-            className="px-4 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs transition-all cursor-pointer"
-          >
-            Switch to {theme === 'dark' ? 'Light' : 'Dark'} Mode
-          </button>
         </div>
 
         <div className="pt-4 border-t border-gray-500/10 flex justify-end">

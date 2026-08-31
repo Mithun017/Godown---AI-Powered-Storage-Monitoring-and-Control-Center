@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-type Theme = 'light' | 'dark';
+type Theme = 'dark';
 
 interface ThemeState {
   theme: Theme;
@@ -8,41 +8,22 @@ interface ThemeState {
   setTheme: (t: Theme) => void;
 }
 
-const getInitialTheme = (): Theme => {
-  const saved = localStorage.getItem('theme');
-  if (saved === 'dark' || saved === 'light') return saved;
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-};
-
-export const useThemeStore = create<ThemeState>((set, get) => {
-  const initialTheme = getInitialTheme();
-  
-  if (initialTheme === 'dark') {
+export const useThemeStore = create<ThemeState>(() => {
+  // Always enforce dark mode on root HTML element
+  if (typeof document !== 'undefined') {
     document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
+    localStorage.setItem('theme', 'dark');
   }
 
   return {
-    theme: initialTheme,
+    theme: 'dark',
     toggleTheme: () => {
-      const next = get().theme === 'light' ? 'dark' : 'light';
-      localStorage.setItem('theme', next);
-      if (next === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-      set({ theme: next });
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
     },
-    setTheme: (t: Theme) => {
-      localStorage.setItem('theme', t);
-      if (t === 'dark') {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-      set({ theme: t });
+    setTheme: () => {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
     },
   };
 });

@@ -1,36 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
-:root {
-  color-scheme: light;
-  /* Material Design 3 (MD3) Light Theme Color Spec */
-  --surface: #F8FDFF;
-  --surface-variant: #E2ECF0;
-  --primary-container: #97F0FF;
-  --primary-container-text: #001F26;
-  --secondary-container: #CDE7EC;
-  --secondary-container-text: #001F25;
-  --tertiary-container: #DDE3FF;
-  --tertiary-container-text: #00113B;
-  --error-container: #FFDAD6;
-  --error-container-text: #410002;
-
-  --bg-gradient: linear-gradient(135deg, #F8FDFF 0%, #EBF4F6 50%, #E1ECEF 100%);
-  --bg-base: #F8FDFF;
-  --glass-bg: rgba(255, 255, 255, 0.94);
-  --glass-border: rgba(9, 30, 37, 0.16);
-  --glass-border-hover: rgba(0, 131, 152, 0.55);
-  --glass-shadow: 0 10px 30px -10px rgba(9, 30, 37, 0.08), 0 4px 12px -2px rgba(9, 30, 37, 0.04);
-  --text-strong: #051419;
-  --text-primary: #14252B;
-  --text-muted: #2E424A;
-  --accent-cyan: #00778B;
-  --accent-cyan-glow: rgba(151, 240, 255, 0.4);
-}
-
-.dark {
+:root, .dark {
   color-scheme: dark;
-  /* Dark Theme - Deep Tech Cybernetic Navy */
+  /* Enforced Dark Theme - Deep Tech Cybernetic Navy */
   --surface: #0F172A;
   --surface-variant: #1E293B;
   --primary-container: #004F58;
@@ -105,39 +78,10 @@ code, pre, .font-mono {
   color: var(--text-strong);
 }
 
-/* Matrix Cell Contrast Guarantee for Both Themes */
+/* Matrix Cell Text Contrast */
 .matrix-cell {
-  color: #051419 !important;
-  font-weight: 800 !important;
-}
-
-.dark .matrix-cell {
   color: #FFFFFF !important;
   font-weight: 800 !important;
-}
-
-/* High-Contrast Light Mode Overrides for Perfect Text Legibility */
-html:not(.dark) {
-  .text-gray-500, .text-gray-400 {
-    color: #2E424A !important;
-  }
-  .text-gray-600 {
-    color: #14252B !important;
-  }
-  .text-gray-300, .text-gray-200 {
-    color: #051419 !important;
-  }
-  
-  input, select, textarea {
-    background-color: var(--surface-variant) !important;
-    color: var(--text-strong) !important;
-    border-color: rgba(9, 30, 37, 0.25) !important;
-    font-weight: 600;
-  }
-  
-  input::placeholder, select::placeholder {
-    color: #485E66 !important;
-  }
 }
 
 /* MD3 Container Utility Classes */

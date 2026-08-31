@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Warehouse, Menu, Sun, Moon } from 'lucide-react';
-import { useThemeStore } from '../stores/themeStore';
+import { Warehouse, Menu } from 'lucide-react';
 
 interface MobileHeaderProps {
   onOpenMobileMenu: () => void;
@@ -9,7 +8,6 @@ interface MobileHeaderProps {
 
 export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenMobileMenu }) => {
   const navigate = useNavigate();
-  const { theme, toggleTheme } = useThemeStore();
 
   return (
     <header className="md:hidden fixed top-0 left-0 right-0 z-30 glass-panel border-b border-gray-500/15 px-4 py-3 flex items-center justify-between rounded-none shadow-md">
@@ -35,13 +33,6 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenMobileMenu }) 
         </div>
       </div>
 
-      <button
-        onClick={toggleTheme}
-        className="p-2 rounded-xl bg-gray-500/10 hover:bg-gray-500/20 text-gray-600 dark:text-gray-300 transition-colors cursor-pointer"
-        title="Toggle Theme"
-      >
-        {theme === 'dark' ? <Sun size={18} className="text-amber-400" /> : <Moon size={18} className="text-sky-600" />}
-      </button>
     </header>
   );
 };
