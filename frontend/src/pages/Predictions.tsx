@@ -3,8 +3,8 @@ import type { PredictStatusResponse, PredictYearlyResponse } from '../types';
 import { apiClient } from '../api/client';
 import { GlassCard } from '../components/GlassCard';
 import { StatusBadge } from '../components/StatusBadge';
-import { 
-  Sparkles, AlertCircle, ArrowRight, TrendingUp, Info, 
+import {
+  Sparkles, AlertCircle, ArrowRight, TrendingUp, Info,
   Grid, Cpu, Activity, ShieldCheck, Package, Flame
 } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
@@ -142,22 +142,20 @@ export const Predictions: React.FC = () => {
       <div className="flex flex-wrap border-b border-gray-500/10 gap-2 sm:gap-4">
         <button
           onClick={() => setActiveTab('classifier')}
-          className={`pb-3 text-xs sm:text-sm font-bold transition-all border-b-2 cursor-pointer ${
-            activeTab === 'classifier'
+          className={`pb-3 text-xs sm:text-sm font-bold transition-all border-b-2 cursor-pointer ${activeTab === 'classifier'
               ? 'border-cyan-500 text-cyan-600 dark:text-cyan-400'
               : 'border-transparent text-gray-500 hover:text-strong'
-          }`}
+            }`}
         >
           Model 1 — Real-time Zone Condition Classifier
         </button>
 
         <button
           onClick={() => setActiveTab('forecaster')}
-          className={`pb-3 text-xs sm:text-sm font-bold transition-all border-b-2 cursor-pointer ${
-            activeTab === 'forecaster'
+          className={`pb-3 text-xs sm:text-sm font-bold transition-all border-b-2 cursor-pointer ${activeTab === 'forecaster'
               ? 'border-cyan-500 text-cyan-600 dark:text-cyan-400'
               : 'border-transparent text-gray-500 hover:text-strong'
-          }`}
+            }`}
         >
           Model 2 — Yearly Capacity Forecast
         </button>
@@ -202,69 +200,69 @@ export const Predictions: React.FC = () => {
                 <form onSubmit={handlePredictStatus} className="space-y-4">
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-700 dark:text-gray-300 mb-1">Temperature (°C)</label>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">Temperature (°C)</label>
                       <input
                         type="number"
                         step="0.1"
                         value={statusForm.Temperature_C}
                         onChange={(e) => setStatusForm({ ...statusForm, Temperature_C: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-100/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 text-xs font-bold text-strong outline-none"
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-700 dark:text-gray-300 mb-1">Humidity (%)</label>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">Humidity (%)</label>
                       <input
                         type="number"
                         step="0.1"
                         value={statusForm['Humidity_%']}
                         onChange={(e) => setStatusForm({ ...statusForm, 'Humidity_%': Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-100/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 text-xs font-bold text-strong outline-none"
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-700 dark:text-gray-300 mb-1">Smoke (PPM)</label>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">Smoke (PPM)</label>
                       <input
                         type="number"
                         step="0.1"
                         value={statusForm.Smoke_ppm}
                         onChange={(e) => setStatusForm({ ...statusForm, Smoke_ppm: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-100/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 text-xs font-bold text-strong outline-none"
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-700 dark:text-gray-300 mb-1">Distance (cm)</label>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">Distance (cm)</label>
                       <input
                         type="number"
                         step="0.1"
                         value={statusForm.Distance_cm}
                         onChange={(e) => setStatusForm({ ...statusForm, Distance_cm: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-100/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 text-xs font-bold text-strong outline-none"
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-700 dark:text-gray-300 mb-1">PIR Motion (0/1)</label>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">PIR Motion (0/1)</label>
                       <input
                         type="number"
                         min="0"
                         max="1"
                         value={statusForm.Motion}
                         onChange={(e) => setStatusForm({ ...statusForm, Motion: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-100/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 text-xs font-bold text-strong outline-none"
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-semibold text-slate-700 dark:text-gray-300 mb-1">Occupancy %</label>
+                      <label className="block text-[11px] font-semibold text-gray-500 mb-1">Occupancy %</label>
                       <input
                         type="number"
                         step="0.1"
                         value={statusForm.Occupancy_Pct}
                         onChange={(e) => setStatusForm({ ...statusForm, Occupancy_Pct: Number(e.target.value) })}
-                        className="w-full px-3 py-2 rounded-xl bg-slate-100/90 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/60 text-xs font-bold text-strong outline-none"
+                        className="w-full px-3 py-2 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-gray-500/20 text-xs font-bold text-strong outline-none"
                       />
                     </div>
                   </div>
@@ -321,9 +319,9 @@ export const Predictions: React.FC = () => {
 
                 {/* Bottom Row: Operational Integrity KPIs (2x2 Grid) */}
                 <div className="grid grid-cols-2 gap-2.5 text-xs pt-1 border-t border-gray-500/10">
-                  <div className="p-2.5 rounded-xl bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700/60 shadow-xs space-y-0.5">
+                  <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/60 border border-gray-500/20 shadow-sm space-y-0.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-slate-800 dark:text-gray-300">Grain Quality Index</span>
+                      <span className="text-[10px] font-bold text-slate-700 dark:text-gray-300">Grain Quality Index</span>
                       <ShieldCheck size={13} className="text-emerald-600 dark:text-emerald-400" />
                     </div>
                     <div className="flex items-baseline gap-1.5">
@@ -335,9 +333,9 @@ export const Predictions: React.FC = () => {
                     <span className="text-[10px] text-slate-600 dark:text-gray-400 block truncate font-semibold">Paddy Spoilage Risk Rate</span>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700/60 shadow-xs space-y-0.5">
+                  <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/60 border border-gray-500/20 shadow-sm space-y-0.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-slate-800 dark:text-gray-300">Rack Load Strain</span>
+                      <span className="text-[10px] font-bold text-slate-700 dark:text-gray-300">Rack Load Strain</span>
                       <Package size={13} className="text-cyan-600 dark:text-cyan-400" />
                     </div>
                     <div className="flex items-baseline gap-1.5">
@@ -349,9 +347,9 @@ export const Predictions: React.FC = () => {
                     <span className="text-[10px] text-slate-600 dark:text-gray-400 block truncate font-semibold">Structural Weight Stress</span>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700/60 shadow-xs space-y-0.5">
+                  <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/60 border border-gray-500/20 shadow-sm space-y-0.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-slate-800 dark:text-gray-300">Hazard Interlock</span>
+                      <span className="text-[10px] font-bold text-slate-700 dark:text-gray-300">Hazard Interlock</span>
                       <Flame size={13} className="text-amber-600 dark:text-amber-400" />
                     </div>
                     <div className="flex items-baseline gap-1.5">
@@ -361,9 +359,9 @@ export const Predictions: React.FC = () => {
                     <span className="text-[10px] text-slate-600 dark:text-gray-400 block truncate font-semibold">Automated Interlock Speed</span>
                   </div>
 
-                  <div className="p-2.5 rounded-xl bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700/60 shadow-xs space-y-0.5">
+                  <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/60 border border-gray-500/20 shadow-sm space-y-0.5">
                     <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-bold text-slate-800 dark:text-gray-300">Inference Certainty</span>
+                      <span className="text-[10px] font-bold text-slate-700 dark:text-gray-300">Inference Certainty</span>
                       <Cpu size={13} className="text-purple-600 dark:text-purple-400" />
                     </div>
                     <div className="flex items-baseline gap-1.5">
@@ -386,7 +384,7 @@ export const Predictions: React.FC = () => {
 
                   {statusResult ? (
                     <div className="space-y-4">
-                      <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 space-y-2">
+                      <div className="p-4 rounded-2xl bg-gray-500/10 border border-gray-500/20 space-y-2">
                         <span className="text-xs text-gray-500 block">Classified Zone Condition:</span>
                         <div className="flex items-center gap-3">
                           <StatusBadge status={statusResult.status} size="lg" />
@@ -402,12 +400,12 @@ export const Predictions: React.FC = () => {
                         </span>
                         <div className="space-y-2">
                           {statusResult.top_features.map((feat, idx) => (
-                            <div key={idx} className="p-3 rounded-xl bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700/60 text-xs flex items-center justify-between shadow-xs">
+                            <div key={idx} className="p-3 rounded-xl bg-white/40 dark:bg-slate-900/40 border border-gray-500/10 text-xs flex items-center justify-between">
                               <div>
-                                <span className="font-extrabold text-slate-900 dark:text-white block">{feat.feature}</span>
-                                <span className="text-[11px] text-slate-600 dark:text-gray-400 font-semibold">Value: {feat.value}</span>
+                                <span className="font-extrabold text-strong block">{feat.feature}</span>
+                                <span className="text-[11px] text-gray-500">Value: {feat.value}</span>
                               </div>
-                              <span className={`font-mono font-bold ${feat.importance > 0 ? 'text-amber-600 dark:text-amber-400' : 'text-cyan-600 dark:text-cyan-400'}`}>
+                              <span className={`font-mono font-bold ${feat.importance > 0 ? 'text-amber-500' : 'text-cyan-500'}`}>
                                 {feat.importance > 0 ? `+${feat.importance}` : feat.importance}
                               </span>
                             </div>
@@ -429,11 +427,10 @@ export const Predictions: React.FC = () => {
                                   <span>{(prob * 100).toFixed(1)}%</span>
                                 </div>
                                 <div className="w-full h-1.5 rounded-full bg-gray-500/20 overflow-hidden">
-                                  <div 
-                                    className={`h-full rounded-full ${
-                                      cls === statusResult.status ? 'bg-cyan-500' : 'bg-gray-400/40'
-                                    }`} 
-                                    style={{ width: `${Math.max(2, prob * 100)}%` }} 
+                                  <div
+                                    className={`h-full rounded-full ${cls === statusResult.status ? 'bg-cyan-500' : 'bg-gray-400/40'
+                                      }`}
+                                    style={{ width: `${Math.max(2, prob * 100)}%` }}
                                   />
                                 </div>
                               </div>
@@ -447,7 +444,7 @@ export const Predictions: React.FC = () => {
                       {/* Standby Banner */}
                       <div className="p-4 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 space-y-2">
                         <div className="flex items-center justify-between">
-                          <span className="text-xs text-gray-500 font-semibold block">Model Status:</span>
+                          <span className="text-xs text-gray-400 font-semibold block">Model Status:</span>
                           <span className="text-[10px] font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/15 px-2.5 py-0.5 rounded-full border border-cyan-500/30 flex items-center gap-1.5">
                             <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping inline-block" />
                             <span>READY FOR INFERENCE</span>
@@ -457,7 +454,7 @@ export const Predictions: React.FC = () => {
                           <StatusBadge status="Safe" size="lg" />
                           <div className="flex flex-col">
                             <span className="text-xs font-bold text-strong">XGBoost Standby Baseline</span>
-                            <span className="text-[11px] text-gray-500">Click <strong className="text-cyan-600 dark:text-cyan-400 font-bold">Run predictions</strong> above to execute inference</span>
+                            <span className="text-[11px] text-gray-500">Click <strong className="text-cyan-500 font-bold">Run predictions</strong> above to execute inference</span>
                           </div>
                         </div>
                       </div>
@@ -468,28 +465,28 @@ export const Predictions: React.FC = () => {
                           Expected Top SHAP Contributing Features:
                         </span>
                         <div className="space-y-2">
-                          <div className="p-3 rounded-xl bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700/60 text-xs flex items-center justify-between shadow-xs">
+                          <div className="p-3 rounded-xl bg-white/40 dark:bg-slate-900/40 border border-gray-500/10 text-xs flex items-center justify-between">
                             <div>
-                              <span className="font-bold text-slate-900 dark:text-white block">Temperature_C</span>
-                              <span className="text-[11px] text-slate-600 dark:text-gray-400 font-semibold">Primary Thermal Sensor Factor</span>
+                              <span className="font-bold text-strong block">Temperature_C</span>
+                              <span className="text-[11px] text-gray-500">Primary Thermal Sensor Factor</span>
                             </div>
-                            <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">+0.420</span>
+                            <span className="font-mono font-bold text-cyan-500">+0.420</span>
                           </div>
 
-                          <div className="p-3 rounded-xl bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700/60 text-xs flex items-center justify-between shadow-xs">
+                          <div className="p-3 rounded-xl bg-white/40 dark:bg-slate-900/40 border border-gray-500/10 text-xs flex items-center justify-between">
                             <div>
-                              <span className="font-bold text-slate-900 dark:text-white block">Smoke_ppm</span>
-                              <span className="text-[11px] text-slate-600 dark:text-gray-400 font-semibold">Combustion Ignition Factor</span>
+                              <span className="font-bold text-strong block">Smoke_ppm</span>
+                              <span className="text-[11px] text-gray-500">Combustion Ignition Factor</span>
                             </div>
-                            <span className="font-mono font-bold text-amber-600 dark:text-amber-400">+0.315</span>
+                            <span className="font-mono font-bold text-amber-500">+0.315</span>
                           </div>
 
-                          <div className="p-3 rounded-xl bg-slate-100/80 dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-700/60 text-xs flex items-center justify-between shadow-xs">
+                          <div className="p-3 rounded-xl bg-white/40 dark:bg-slate-900/40 border border-gray-500/10 text-xs flex items-center justify-between">
                             <div>
-                              <span className="font-bold text-slate-900 dark:text-white block">Thermal_Moisture_Index</span>
-                              <span className="text-[11px] text-slate-600 dark:text-gray-400 font-semibold">Engineered Domain Feature</span>
+                              <span className="font-bold text-strong block">Thermal_Moisture_Index</span>
+                              <span className="text-[11px] text-gray-500">Engineered Domain Feature</span>
                             </div>
-                            <span className="font-mono font-bold text-cyan-600 dark:text-cyan-400">+0.180</span>
+                            <span className="font-mono font-bold text-cyan-500">+0.180</span>
                           </div>
                         </div>
                       </div>
@@ -513,9 +510,9 @@ export const Predictions: React.FC = () => {
                                 <span>{(item.prob * 100).toFixed(1)}%</span>
                               </div>
                               <div className="w-full h-1.5 rounded-full bg-gray-500/20 overflow-hidden">
-                                <div 
-                                  className={`h-full rounded-full ${item.active ? 'bg-cyan-500' : 'bg-gray-400/40'}`} 
-                                  style={{ width: `${item.prob * 100}%` }} 
+                                <div
+                                  className={`h-full rounded-full ${item.active ? 'bg-cyan-500' : 'bg-gray-400/40'}`}
+                                  style={{ width: `${item.prob * 100}%` }}
                                 />
                               </div>
                             </div>
