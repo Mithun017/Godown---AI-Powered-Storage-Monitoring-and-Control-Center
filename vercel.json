@@ -7,6 +7,10 @@
   },
   "rewrites": [
     {
+      "source": "/api/:path*",
+      "destination": "https://temperatures-barrier-pole-forming.trycloudflare.com/api/:path*"
+    },
+    {
       "source": "/(.*)",
       "destination": {
         "type": "service",
