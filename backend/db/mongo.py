@@ -1,4 +1,5 @@
 import asyncio
+import certifi
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from core.config import settings
 
@@ -13,7 +14,7 @@ def get_client() -> AsyncIOMotorClient:
     if loop not in _clients or _clients[loop] is None:
         _clients[loop] = AsyncIOMotorClient(
             settings.MONGO_URI,
-            tls=True,
+            tlsCAFile=certifi.where(),
             tlsAllowInvalidCertificates=True,
             serverSelectionTimeoutMS=5000,
             connectTimeoutMS=5000,
