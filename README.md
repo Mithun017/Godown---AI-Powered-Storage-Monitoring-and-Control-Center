@@ -3,7 +3,20 @@
 > **A full-stack predictive control center for Tamil Nadu's 10-warehouse IoT network.**
 > Transforms 122,000 raw sensor readings into real-time safety alerts, capacity forecasts, and grounded AI-driven operational intelligence — all served through a glassmorphism React dashboard.
 
+[![Vercel Deployment](https://img.shields.io/badge/Vercel-Live%20Demo-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://godown-warehouse.vercel.app/)
+
+### 🚀 Live Deployment
+- **Production URL**: [https://godown-warehouse.vercel.app/](https://godown-warehouse.vercel.app/)
+- **Live Database**: Connected to MongoDB Atlas Cloud Cluster
+
+#### 🔑 Quick Demo Credentials
+| Role | Government Email | Account Password | Access Level |
+| :--- | :--- | :--- | :--- |
+| **HQ Admin** | `admin@tnwarehouses.gov.in` | `admin123` | Full Network (10 Warehouses) |
+| **Warehouse Head** | `head1@tnwarehouses.gov.in` | `head123` | Single Warehouse Scope |
+
 ---
+
 
 ## Table of Contents
 
