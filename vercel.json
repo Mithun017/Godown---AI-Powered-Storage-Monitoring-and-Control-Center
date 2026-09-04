@@ -4,9 +4,9 @@
       "root": "frontend",
       "framework": "vite"
     },
-    "backend": {
-      "root": "backend",
-      "entrypoint": "main.py"
+    "api": {
+      "root": "api",
+      "entrypoint": "index.py"
     }
   },
   "rewrites": [
@@ -14,7 +14,7 @@
       "source": "/api(/.*)?",
       "destination": {
         "type": "service",
-        "service": "backend"
+        "service": "api"
       }
     },
     {
