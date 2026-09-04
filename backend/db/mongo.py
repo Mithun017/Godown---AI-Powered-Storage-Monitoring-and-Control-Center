@@ -7,7 +7,12 @@ db: AsyncIOMotorDatabase = None
 def get_client() -> AsyncIOMotorClient:
     global client
     if client is None:
-        client = AsyncIOMotorClient(settings.MONGO_URI)
+        client = AsyncIOMotorClient(
+            settings.MONGO_URI,
+            serverSelectionTimeoutMS=5000,
+            connectTimeoutMS=5000,
+            socketTimeoutMS=5000
+        )
     return client
 
 def get_database() -> AsyncIOMotorDatabase:
