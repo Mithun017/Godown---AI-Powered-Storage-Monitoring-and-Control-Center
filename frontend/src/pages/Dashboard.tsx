@@ -4,6 +4,7 @@ import type { Warehouse, AnalyticsOverview } from '../types';
 import { apiClient } from '../api/client';
 import { GlassCard } from '../components/GlassCard';
 import { StatusBadge } from '../components/StatusBadge';
+import { TNMap } from '../components/TNMap';
 import { Warehouse as WarehouseIcon, MapPin, ChevronDown, ChevronUp, Layers, Package, PieChart, RefreshCw } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
@@ -201,41 +202,7 @@ export const Dashboard: React.FC = () => {
                 <span>TN Network Map</span>
               </h2>
 
-              <div className="relative w-full h-80 bg-slate-900/60 rounded-xl border border-gray-500/20 overflow-hidden flex items-center justify-center p-4">
-                <svg viewBox="76 8 4 6" className="w-full h-full transform scale-y-[-1]">
-                  {warehouses.map((w) => {
-                    const isCritical = w.latest_status?.includes('Critical') || w.latest_status?.includes('Risk');
-                    return (
-                      <g key={w.warehouse_id} className="cursor-pointer" onClick={() => navigate(`/warehouses/${w.warehouse_id}`)}>
-                        <circle
-                          cx={w.longitude}
-                          cy={w.latitude}
-                          r="0.08"
-                          fill={isCritical ? '#FB8500' : '#219EBC'}
-                          className="animate-ping opacity-75"
-                        />
-                        <circle
-                          cx={w.longitude}
-                          cy={w.latitude}
-                          r="0.06"
-                          fill={isCritical ? '#FB8500' : '#219EBC'}
-                        />
-                      </g>
-                    );
-                  })}
-                </svg>
-
-                <div className="absolute bottom-2 left-2 right-2 p-2 rounded-lg bg-slate-900/90 text-[11px] text-gray-300 flex items-center justify-around border border-white/10">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-cyan-500 inline-block" />
-                    <span>Safe Godown</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block" />
-                    <span>Critical Flag</span>
-                  </div>
-                </div>
-              </div>
+              <TNMap warehouses={warehouses} />
             </div>
 
             <div className="mt-4 pt-4 border-t border-gray-500/10 text-xs text-gray-500 space-y-1">

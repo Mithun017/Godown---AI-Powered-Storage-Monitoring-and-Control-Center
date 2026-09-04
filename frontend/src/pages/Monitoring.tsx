@@ -6,7 +6,7 @@ import {
   Activity, Thermometer, Droplets, Flame, Package, Move 
 } from 'lucide-react';
 import { 
-  ResponsiveContainer, LineChart, Line, XAxis, YAxis, 
+  ResponsiveContainer, LineChart, Line, BarChart, Bar, XAxis, YAxis, 
   Tooltip, CartesianGrid, Legend, ReferenceLine 
 } from 'recharts';
 
@@ -307,9 +307,9 @@ export const Monitoring: React.FC = () => {
         </div>
       )}
 
-      {/* Telemetry Line Charts Matching User Reference Image Design */}
+      {/* Main Grid Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* CHART 1: Multi-Parameter Sensor Telemetry Line Analysis (Blue, Orange, Green Lines with Linear Vertex Dots) */}
+        {/* CHART 1: Multi-Parameter Telemetry Line Analysis (Reference Design Match) */}
         <GlassCard className="col-span-1 lg:col-span-2">
           <div className="text-center mb-6 pt-2">
             <h2 className="text-xl sm:text-2xl font-extrabold text-strong tracking-tight">
@@ -336,7 +336,6 @@ export const Monitoring: React.FC = () => {
                 <Tooltip contentStyle={{ background: '#0F172A', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }} />
                 <Legend verticalAlign="bottom" align="center" iconType="rect" wrapperStyle={{ paddingTop: '15px' }} />
                 
-                {/* 3 Color Lines (Blue = Temp, Orange = Humidity, Green = Occupancy) with Linear Straight Segment Nodes */}
                 <Line type="linear" dataKey="Temperature_C" name="Temperature (°C)" stroke="#3B82F6" strokeWidth={2.2} dot={{ r: 5, fill: '#3B82F6', strokeWidth: 1 }} />
                 <Line type="linear" dataKey="Humidity_%" name="Humidity (%)" stroke="#F97316" strokeWidth={2.2} dot={{ r: 5, fill: '#F97316', strokeWidth: 1 }} />
                 <Line type="linear" dataKey="Occupancy_Pct" name="Occupancy (%)" stroke="#22C55E" strokeWidth={2.2} dot={{ r: 5, fill: '#22C55E', strokeWidth: 1 }} />
@@ -345,18 +344,19 @@ export const Monitoring: React.FC = () => {
           </div>
         </GlassCard>
 
-        {/* CHART 2: Smoke PPM Combustion Line Stream */}
+        {/* CHART 2: Combined Smoke Concentration (PPM) & Ultrasonic Proximity Distance (cm) Dual-Axis Line Stream */}
         <GlassCard>
           <div className="flex items-center justify-between mb-4 border-b border-gray-500/10 pb-3">
             <div>
               <h3 className="font-extrabold text-sm text-strong flex items-center gap-2">
                 <Flame size={16} className="text-orange-500" />
-                <span>Smoke Concentration (PPM) Stream</span>
+                <Move size={16} className="text-purple-500" />
+                <span>Smoke Concentration & Ultrasonic Proximity Stream</span>
               </h3>
-              <p className="text-[11px] text-gray-500">MQ Gas sensor live smoke & combustion hazard levels</p>
+              <p className="text-[11px] text-gray-500">Combined dual-axis telemetry stream for MQ Gas PPM and HC-SR04 Proximity cm</p>
             </div>
             <span className="text-xs font-bold text-orange-500 bg-orange-500/10 px-2.5 py-0.5 rounded-lg border border-orange-500/20">
-              Combustion Telemetry
+              Dual-Axis Telemetry
             </span>
           </div>
 
@@ -365,41 +365,46 @@ export const Monitoring: React.FC = () => {
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
                 <XAxis dataKey="Timestamp" tick={{ fontSize: 9 }} tickFormatter={(ts) => ts.split(' ')[1] || ts} />
-                <YAxis tick={{ fontSize: 10 }} domain={['auto', 'auto']} />
+                <YAxis yAxisId="left" tick={{ fontSize: 10 }} domain={['auto', 'auto']} />
+                <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 10 }} domain={['auto', 'auto']} />
                 <Tooltip contentStyle={{ background: '#0F172A', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }} />
                 <Legend verticalAlign="bottom" align="center" iconType="rect" />
-                <ReferenceLine y={300} label={{ value: 'Hazard Level (300 PPM)', fill: '#F97316', fontSize: 10 }} stroke="#F97316" strokeDasharray="3 3" />
-                <Line type="linear" dataKey="Smoke_ppm" name="Smoke PPM" stroke="#F97316" strokeWidth={2.2} dot={{ r: 4.5, fill: '#F97316' }} />
+                <ReferenceLine yAxisId="left" y={300} label={{ value: '300 PPM Hazard', fill: '#F97316', fontSize: 10 }} stroke="#F97316" strokeDasharray="3 3" />
+                
+                {/* Smoke PPM (Orange Line) & Distance cm (Purple Line) Combined Together */}
+                <Line yAxisId="left" type="linear" dataKey="Smoke_ppm" name="Smoke PPM" stroke="#F97316" strokeWidth={2.2} dot={{ r: 4.5, fill: '#F97316' }} />
+                <Line yAxisId="right" type="linear" dataKey="Distance_cm" name="Distance (cm)" stroke="#A855F7" strokeWidth={2.2} dot={{ r: 4.5, fill: '#A855F7' }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </GlassCard>
 
-        {/* CHART 3: Proximity Distance (cm) Line Stream */}
+        {/* CHART 3: Restored Zone Capacity Utilization & Vacant Volume (%) Bar Chart */}
         <GlassCard>
           <div className="flex items-center justify-between mb-4 border-b border-gray-500/10 pb-3">
             <div>
               <h3 className="font-extrabold text-sm text-strong flex items-center gap-2">
-                <Move size={16} className="text-purple-500" />
-                <span>Ultrasonic Proximity Distance (cm) Analysis</span>
+                <Package size={16} className="text-cyan-500" />
+                <span>Zone Capacity Utilization & Vacant Volume (%)</span>
               </h3>
-              <p className="text-[11px] text-gray-500">HC-SR04 ultrasonic distance sensor readings</p>
+              <p className="text-[11px] text-gray-500">Live sack storage volume vs empty rack capacity</p>
             </div>
-            <span className="text-xs font-bold text-purple-500 bg-purple-500/10 px-2.5 py-0.5 rounded-lg border border-purple-500/20">
-              Proximity Telemetry
+            <span className="text-xs font-bold text-cyan-500 bg-cyan-500/10 px-2.5 py-0.5 rounded-lg border border-cyan-500/20">
+              Capacity Utilization
             </span>
           </div>
 
           <div className="h-64 sm:h-72 w-full">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={chartData}>
+              <BarChart data={chartData.slice(-15)}>
                 <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
                 <XAxis dataKey="Timestamp" tick={{ fontSize: 9 }} tickFormatter={(ts) => ts.split(' ')[1] || ts} />
-                <YAxis tick={{ fontSize: 10 }} domain={['auto', 'auto']} />
+                <YAxis tick={{ fontSize: 10 }} domain={[0, 100]} />
                 <Tooltip contentStyle={{ background: '#0F172A', borderColor: '#334155', borderRadius: '12px', fontSize: '12px' }} />
                 <Legend verticalAlign="bottom" align="center" iconType="rect" />
-                <Line type="linear" dataKey="Distance_cm" name="Distance (cm)" stroke="#A855F7" strokeWidth={2.2} dot={{ r: 4.5, fill: '#A855F7' }} />
-              </LineChart>
+                <Bar dataKey="Occupancy_Pct" name="Occupancy %" fill="#219EBC" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="Vacant_Space_Pct" name="Vacant %" fill="#8ECAE6" radius={[4, 4, 0, 0]} />
+              </BarChart>
             </ResponsiveContainer>
           </div>
         </GlassCard>
