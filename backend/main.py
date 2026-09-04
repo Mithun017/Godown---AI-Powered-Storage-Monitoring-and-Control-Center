@@ -12,7 +12,10 @@ from routers import auth, warehouses, predictions, alerts, analytics, assistant,
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup: Initialize DB indexes and load ML model artifacts once
-    await init_db_indexes()
+    try:
+        await init_db_indexes()
+    except Exception as e:
+        print(f"Warning: DB index initialization deferred: {e}")
     load_ml_models()
     yield
     # Shutdown: cleanup if needed
