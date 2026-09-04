@@ -13,6 +13,8 @@ def get_client() -> AsyncIOMotorClient:
     if loop not in _clients or _clients[loop] is None:
         _clients[loop] = AsyncIOMotorClient(
             settings.MONGO_URI,
+            tls=True,
+            tlsAllowInvalidCertificates=True,
             serverSelectionTimeoutMS=5000,
             connectTimeoutMS=5000,
             socketTimeoutMS=5000
