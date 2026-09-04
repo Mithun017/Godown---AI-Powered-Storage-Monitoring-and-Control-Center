@@ -1,26 +1,27 @@
+import asyncio
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase
 from core.config import settings
 
-client: AsyncIOMotorClient = None
-db: AsyncIOMotorDatabase = None
+_clients = {}
 
 def get_client() -> AsyncIOMotorClient:
-    global client
-    if client is None:
-        client = AsyncIOMotorClient(
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        loop = None
+
+    if loop not in _clients or _clients[loop] is None:
+        _clients[loop] = AsyncIOMotorClient(
             settings.MONGO_URI,
             serverSelectionTimeoutMS=5000,
             connectTimeoutMS=5000,
             socketTimeoutMS=5000
         )
-    return client
+    return _clients[loop]
 
 def get_database() -> AsyncIOMotorDatabase:
-    global db
-    if db is None:
-        c = get_client()
-        db = c[settings.DB_NAME]
-    return db
+    c = get_client()
+    return c[settings.DB_NAME]
 
 def get_users_collection():
     return get_database()["users"]
