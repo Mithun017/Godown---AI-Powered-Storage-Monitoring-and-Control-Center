@@ -28,3 +28,5 @@ Thumbs.db
 *.swp
 .agents/
 Deployment.bat
+
+.vercel
