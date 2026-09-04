@@ -15,12 +15,12 @@ def get_client() -> AsyncIOMotorClient:
         _clients[loop] = AsyncIOMotorClient(
             settings.MONGO_URI,
             tlsCAFile=certifi.where(),
-            tlsAllowInvalidCertificates=True,
-            serverSelectionTimeoutMS=5000,
-            connectTimeoutMS=5000,
-            socketTimeoutMS=5000
+            serverSelectionTimeoutMS=7000,
+            connectTimeoutMS=7000,
+            socketTimeoutMS=7000
         )
     return _clients[loop]
+
 
 def get_database() -> AsyncIOMotorDatabase:
     c = get_client()
