@@ -11,6 +11,9 @@ class PredictStatusRequest(BaseModel):
     Zone_Capacity_Sacks: int
     Occupancy_Pct: float
     Month: int
+    Combustible_Gas_LEL: Optional[float] = Field(2.5, alias="Combustible_Gas_LEL")
+    Stock_Tonnes: Optional[float] = Field(None, alias="Stock_Tonnes")
+    Warehouse_ID_Code: Optional[str] = Field("TNWC-001", alias="Warehouse_ID_Code")
     Thermal_Moisture_Index: Optional[float] = None
     Combustion_Risk_Score: Optional[float] = None
     Capacity_Pressure_Index: Optional[float] = None
