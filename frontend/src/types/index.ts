@@ -51,6 +51,8 @@ export interface SensorReading {
   Previous_Year_Avg_Fill_Pct: number;
   Previous_Year_Days_RackFull: number;
   Next_Year_Projected_Occupancy_Pct: number;
+  Combustible_Gas_LEL?: number;
+  Stock_Tonnes?: number;
 }
 
 export interface PaginatedReadings {
