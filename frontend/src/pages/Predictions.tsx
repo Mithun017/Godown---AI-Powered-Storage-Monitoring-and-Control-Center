@@ -8,7 +8,7 @@ import {
 } from '../utils/thresholds';
 import {
   Sparkles, AlertCircle, ArrowRight, TrendingUp, Info,
-  Grid, Cpu, Activity, Thermometer, Droplets, Wind, Flame, Package
+  Grid, Cpu, Activity, Thermometer, Droplets, Wind, Flame
 } from 'lucide-react';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
 
@@ -453,172 +453,67 @@ export const Predictions: React.FC = () => {
                   </span>
                 </div>
 
-                {/* Symmetrical 4x2 Grid of Metric & Index Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
-                  {/* Card 1: Temp */}
-                  <div className={`p-3.5 rounded-xl border transition-all flex flex-col justify-between space-y-2 bg-slate-900/60 ${tempEval.borderClass}`}>
-                    <div className="flex items-center justify-between gap-1">
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        <Thermometer size={14} className={`shrink-0 ${tempEval.textClass}`} />
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 truncate">Temperature</span>
-                      </div>
-                      <span className={`shrink-0 text-[9px] font-extrabold px-2 py-0.5 rounded-full border uppercase ${tempEval.badgeBgClass}`}>
-                        {tempEval.severity === 'normal' ? 'NORMAL' : tempEval.severity === 'warning' ? 'WARNING' : 'CRITICAL'}
-                      </span>
+                {/* Top Row: 4 Param Threshold Evaluator Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                  {/* Temp Status Card */}
+                  <div className={`p-2.5 rounded-xl border space-y-1 ${tempEval.badgeBgClass}`}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-extrabold block">Temperature</span>
+                      <Thermometer size={13} />
                     </div>
-
-                    <div className="py-1">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-xl font-black text-white tracking-tight leading-none">{statusForm.Temperature_C}</span>
-                        <span className="text-xs font-bold text-gray-300">°C</span>
-                      </div>
-                    </div>
-
-                    <span className="text-[9.5px] text-gray-400 font-mono block">Spec ≤ 25.0 °C</span>
+                    <span className="text-base font-extrabold block">{statusForm.Temperature_C} °C</span>
+                    <span className="text-[9px] font-bold block">{tempEval.label} (≤25° Spec)</span>
                   </div>
 
-                  {/* Card 2: Humidity */}
-                  <div className={`p-3.5 rounded-xl border transition-all flex flex-col justify-between space-y-2 bg-slate-900/60 ${humEval.borderClass}`}>
-                    <div className="flex items-center justify-between gap-1">
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        <Droplets size={14} className={`shrink-0 ${humEval.textClass}`} />
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 truncate">Humidity</span>
-                      </div>
-                      <span className={`shrink-0 text-[9px] font-extrabold px-2 py-0.5 rounded-full border uppercase ${humEval.badgeBgClass}`}>
-                        {humEval.severity === 'normal' ? 'NORMAL' : humEval.severity === 'warning' ? 'WARNING' : 'CRITICAL'}
-                      </span>
+                  {/* Humidity Status Card */}
+                  <div className={`p-2.5 rounded-xl border space-y-1 ${humEval.badgeBgClass}`}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-extrabold block">Humidity</span>
+                      <Droplets size={13} />
                     </div>
-
-                    <div className="py-1">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-xl font-black text-white tracking-tight leading-none">{statusForm['Humidity_%']}</span>
-                        <span className="text-xs font-bold text-gray-300">%RH</span>
-                      </div>
-                    </div>
-
-                    <span className="text-[9.5px] text-gray-400 font-mono block">Spec ≤ 65.0 %RH</span>
+                    <span className="text-base font-extrabold block">{statusForm['Humidity_%']} %RH</span>
+                    <span className="text-[9px] font-bold block">{humEval.label} (≤65% Spec)</span>
                   </div>
 
-                  {/* Card 3: Smoke */}
-                  <div className={`p-3.5 rounded-xl border transition-all flex flex-col justify-between space-y-2 bg-slate-900/60 ${smokeEval.borderClass}`}>
-                    <div className="flex items-center justify-between gap-1">
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        <Flame size={14} className={`shrink-0 ${smokeEval.textClass}`} />
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 truncate">Smoke Sensor</span>
-                      </div>
-                      <span className={`shrink-0 text-[9px] font-extrabold px-2 py-0.5 rounded-full border uppercase ${smokeEval.badgeBgClass}`}>
-                        {smokeEval.severity === 'normal' ? 'NORMAL' : 'HAZARD'}
-                      </span>
+                  {/* Smoke Status Card */}
+                  <div className={`p-2.5 rounded-xl border space-y-1 ${smokeEval.badgeBgClass}`}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-extrabold block">Smoke Detector</span>
+                      <Flame size={13} />
                     </div>
-
-                    <div className="py-1">
-                      <span className={`text-lg font-black tracking-tight leading-none block ${statusForm.Smoke_Status === 'DETECTED' ? 'text-rose-400' : 'text-emerald-400'}`}>
-                        {statusForm.Smoke_Status}
-                      </span>
-                    </div>
-
-                    <span className="text-[9.5px] text-gray-400 font-mono block">Zero Smoke Spec</span>
+                    <span className="text-base font-extrabold block">{statusForm.Smoke_Status}</span>
+                    <span className="text-[9px] font-bold block">{smokeEval.severity === 'normal' ? 'Normal' : 'Critical Hazard'}</span>
                   </div>
 
-                  {/* Card 4: Combustible Gas */}
-                  <div className={`p-3.5 rounded-xl border transition-all flex flex-col justify-between space-y-2 bg-slate-900/60 ${gasEval.borderClass}`}>
-                    <div className="flex items-center justify-between gap-1">
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        <Wind size={14} className={`shrink-0 ${gasEval.textClass}`} />
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-gray-400 truncate">Combustible Gas</span>
-                      </div>
-                      <span className={`shrink-0 text-[9px] font-extrabold px-2 py-0.5 rounded-full border uppercase ${gasEval.badgeBgClass}`}>
-                        {gasEval.severity === 'normal' ? 'NORMAL' : gasEval.severity === 'warning' ? 'WARNING' : 'CRITICAL'}
-                      </span>
+                  {/* Gas LEL Status Card */}
+                  <div className={`p-2.5 rounded-xl border space-y-1 ${gasEval.badgeBgClass}`}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-extrabold block">Combustible Gas</span>
+                      <Wind size={13} />
                     </div>
+                    <span className="text-base font-extrabold block">{statusForm.Combustible_Gas_LEL} %LEL</span>
+                    <span className="text-[9px] font-bold block">{gasEval.label} (&lt;5% Spec)</span>
+                  </div>
+                </div>
 
-                    <div className="py-1">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-xl font-black text-white tracking-tight leading-none">{statusForm.Combustible_Gas_LEL}</span>
-                        <span className="text-xs font-bold text-gray-300">%LEL</span>
-                      </div>
-                    </div>
-
-                    <span className="text-[9.5px] text-gray-400 font-mono block">Spec &lt; 5.0 %LEL</span>
+                {/* Bottom Row: Engineered Domain Indices (TMI, CRS, CPI) */}
+                <div className="grid grid-cols-3 gap-2.5 text-xs pt-1 border-t border-gray-500/10">
+                  <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/25 space-y-0.5">
+                    <span className="text-[10px] text-gray-300 font-bold block">Thermal-Moisture (TMI)</span>
+                    <span className="text-base font-extrabold text-amber-400 block">{liveTMI}</span>
+                    <span className="text-[9px] text-gray-400 block">Grain Spoilage Risk</span>
                   </div>
 
-                  {/* Card 5: TMI */}
-                  <div className="p-3.5 rounded-xl border border-amber-500/30 bg-amber-500/10 flex flex-col justify-between space-y-2">
-                    <div className="flex items-center justify-between gap-1">
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        <Activity size={14} className="shrink-0 text-amber-400" />
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-300/90 truncate">TMI Index</span>
-                      </div>
-                      <span className="shrink-0 text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase">
-                        SPOILAGE
-                      </span>
-                    </div>
-
-                    <div className="py-1">
-                      <span className="text-xl font-black text-amber-400 tracking-tight leading-none block">{liveTMI}</span>
-                    </div>
-
-                    <span className="text-[9.5px] text-gray-400 block">Grain Spoilage Risk</span>
+                  <div className="p-2.5 rounded-xl bg-rose-500/10 border border-rose-500/25 space-y-0.5">
+                    <span className="text-[10px] text-gray-300 font-bold block">Combustion Risk (CRS)</span>
+                    <span className="text-base font-extrabold text-rose-400 block">{liveCRS}</span>
+                    <span className="text-[9px] text-gray-400 block">Gas & Smoke Hazard</span>
                   </div>
 
-                  {/* Card 6: CRS */}
-                  <div className="p-3.5 rounded-xl border border-rose-500/30 bg-rose-500/10 flex flex-col justify-between space-y-2">
-                    <div className="flex items-center justify-between gap-1">
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        <Flame size={14} className="shrink-0 text-rose-400" />
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-rose-300/90 truncate">CRS Index</span>
-                      </div>
-                      <span className="shrink-0 text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 border border-rose-500/40 uppercase">
-                        HAZARD
-                      </span>
-                    </div>
-
-                    <div className="py-1">
-                      <span className="text-xl font-black text-rose-400 tracking-tight leading-none block">{liveCRS}</span>
-                    </div>
-
-                    <span className="text-[9.5px] text-gray-400 block">Gas & Smoke Hazard</span>
-                  </div>
-
-                  {/* Card 7: CPI */}
-                  <div className="p-3.5 rounded-xl border border-cyan-500/30 bg-cyan-500/10 flex flex-col justify-between space-y-2">
-                    <div className="flex items-center justify-between gap-1">
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        <Grid size={14} className="shrink-0 text-cyan-400" />
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-cyan-300/90 truncate">CPI Index</span>
-                      </div>
-                      <span className="shrink-0 text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 uppercase">
-                        LOAD
-                      </span>
-                    </div>
-
-                    <div className="py-1">
-                      <span className="text-xl font-black text-cyan-400 tracking-tight leading-none block">{liveCPI}</span>
-                    </div>
-
-                    <span className="text-[9.5px] text-gray-400 block">Stock Tonnes Load</span>
-                  </div>
-
-                  {/* Card 8: Stock Volume Load */}
-                  <div className="p-3.5 rounded-xl border border-sky-500/30 bg-sky-500/10 flex flex-col justify-between space-y-2">
-                    <div className="flex items-center justify-between gap-1">
-                      <div className="flex items-center gap-1.5 min-w-0">
-                        <Package size={14} className="shrink-0 text-sky-400" />
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-sky-300/90 truncate">Stock Volume</span>
-                      </div>
-                      <span className="shrink-0 text-[9px] font-extrabold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/40 uppercase">
-                        {statusForm.Occupancy_Pct.toFixed(1)}% OCC
-                      </span>
-                    </div>
-
-                    <div className="py-1">
-                      <div className="flex items-baseline gap-1">
-                        <span className="text-xl font-black text-sky-400 tracking-tight leading-none">{(statusForm.Stock_Tonnes).toLocaleString()}</span>
-                        <span className="text-xs font-bold text-sky-300">Tonnes</span>
-                      </div>
-                    </div>
-
-                    <span className="text-[9.5px] text-gray-400 block font-mono">{(statusForm.Number_of_Sacks).toLocaleString()} Sacks</span>
+                  <div className="p-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/25 space-y-0.5">
+                    <span className="text-[10px] text-gray-300 font-bold block">Capacity Pressure (CPI)</span>
+                    <span className="text-base font-extrabold text-cyan-400 block">{liveCPI}</span>
+                    <span className="text-[9px] text-gray-400 block">Stock Tonnes Load</span>
                   </div>
                 </div>
               </GlassCard>
